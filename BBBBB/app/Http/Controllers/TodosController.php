@@ -16,10 +16,10 @@ class TodosController extends Controller
 
         return view('todos.index')->with('todos', Todo::all()); //変数$todosにfetchしたdataが格納される
     }
-    public function show($todoId) //routeからパラメータを取得
+    public function show(Todo $todo) //Todo::find($todo)のショートハンド
     {
 
-        return view('todos.show')->with('todo', Todo::find($todoId));
+        return view('todos.show')->with('todo', $todo);
     }
     public function create()
     {
@@ -33,20 +33,24 @@ class TodosController extends Controller
         ]);
         // dd(request()->all()); formのbodyが取得できる
         $data = request()->all();
-        $todo = new Todo();
+        $todo = new Todo(); //インスタンスを作ったら最後にsaveメソッド
+        //Model::createメソッドを使う場合はsaveメソッドは不要
         $todo->name = $data['name'];
         $todo->description = $data['description'];
         $todo->completed = false;
 
         $todo->save();
+
+        session()->flash('success', 'Todo created successfully.');
+        //viewにflashメッセージを表示することができる
         return redirect('/todos');
     }
-    public function edit($todoId)
+    public function edit(Todo $todo) //Todo::find($todoId)のショートハンド
     {
-        $todo = Todo::find($todoId);
+
         return view('todos.edit')->with('todo', $todo);
     }
-    public function update($todoId)
+    public function update(Todo $todo) //Todo::find($todoId)のショートハンド
     {
         $this->validate(request(), [
             'name' => 'required|min:6|max:12',
@@ -54,11 +58,30 @@ class TodosController extends Controller
         ]);
         $data = request()->all(); //連想配列
 
-        $todo = Todo::find($todoId); //オブジェクト
 
         $todo->name = $data['name'];
         $todo->description = $data['description'];
         $todo->save();
+        session()->flash('success', 'Todo updated successfully.');
+
+        return redirect('/todos');
+    }
+    public function destroy(Todo $todo)
+    {
+
+
+
+        $todo->delete();
+        session()->flash('success', 'Todo deleted successfully.');
+
+
+        return redirect('/todos');
+    }
+    public function complete(Todo $todo)
+    {
+        $todo->completed  = true;
+        $todo->save();
+        session()->flash('success', 'Todo completed successfully');
         return redirect('/todos');
     }
 }
