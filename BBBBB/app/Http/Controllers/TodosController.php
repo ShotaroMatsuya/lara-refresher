@@ -41,4 +41,24 @@ class TodosController extends Controller
         $todo->save();
         return redirect('/todos');
     }
+    public function edit($todoId)
+    {
+        $todo = Todo::find($todoId);
+        return view('todos.edit')->with('todo', $todo);
+    }
+    public function update($todoId)
+    {
+        $this->validate(request(), [
+            'name' => 'required|min:6|max:12',
+            'description' => 'required'
+        ]);
+        $data = request()->all(); //連想配列
+
+        $todo = Todo::find($todoId); //オブジェクト
+
+        $todo->name = $data['name'];
+        $todo->description = $data['description'];
+        $todo->save();
+        return redirect('/todos');
+    }
 }
