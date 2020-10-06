@@ -11,6 +11,6 @@ class TodosSeeder extends Seeder
      */
     public function run()
     {
-        factory(App\Todo::class, 10)->create(); //第一引数にModleクラスをセット、10回factoryを実行してくれる
+        factory(App\Todo::class, 5)->create(); //第一引数にModleクラスをセット、10回factoryを実行してくれる
     }
 }
