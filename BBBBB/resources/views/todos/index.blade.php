@@ -2,7 +2,7 @@
 
 @section('title')
     Todos List
-    
+
 @endsection
 
 @section('content')
@@ -16,20 +16,20 @@
                         todos
                     </div>
                     <div class="card-body">
-        
+
                         <ul class="list-group">
                             @foreach($todos as $todo)
                             <li class="list-group-item">
                                 {{$todo->name}}
                                 @if (!$todo->completed)
-                                <a href="/todos/{{$todo->id}}/complete" style="color:white" class="btn btn-warning btn-sm float-right">Comoplete</a>
-                                    
+                                <a href="/todos/{{$todo->id}}/complete" style="color:white" class="btn btn-warning btn-sm float-right">完了</a>
+
                                 @endif
-                                <a href="/todos/{{$todo->id}}" class="btn btn-primary btn-sm float-right mr-2">View</a>
+                                <a href="/todos/{{$todo->id}}" class="btn btn-primary btn-sm float-right mr-2">詳細を見る</a>
                             </li>
                             @endforeach
                         </ul>
-                            
+
                     </div>
                 </div>
             </div>

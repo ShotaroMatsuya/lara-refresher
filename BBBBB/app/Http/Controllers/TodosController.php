@@ -28,7 +28,7 @@ class TodosController extends Controller
     public function store()
     {
         $this->validate(request(), [
-            'name' => 'required|min:6|max:12',
+            'name' => 'required|min:5|max:30',
             'description' => 'required'
         ]);
         // dd(request()->all()); formのbodyが取得できる
@@ -41,7 +41,7 @@ class TodosController extends Controller
 
         $todo->save();
 
-        session()->flash('success', 'Todo created successfully.');
+        session()->flash('success', 'Todoを追加しました！');
         //viewにflashメッセージを表示することができる
         return redirect('/todos');
     }
@@ -53,7 +53,7 @@ class TodosController extends Controller
     public function update(Todo $todo) //Todo::find($todoId)のショートハンド
     {
         $this->validate(request(), [
-            'name' => 'required|min:6|max:12',
+            'name' => 'required|min:5|max:30',
             'description' => 'required'
         ]);
         $data = request()->all(); //連想配列
@@ -62,7 +62,7 @@ class TodosController extends Controller
         $todo->name = $data['name'];
         $todo->description = $data['description'];
         $todo->save();
-        session()->flash('success', 'Todo updated successfully.');
+        session()->flash('success', 'Todoの変更を保存しました！！');
 
         return redirect('/todos');
     }
@@ -72,7 +72,7 @@ class TodosController extends Controller
 
 
         $todo->delete();
-        session()->flash('success', 'Todo deleted successfully.');
+        session()->flash('success', 'Todoを削除しました');
 
 
         return redirect('/todos');
@@ -81,7 +81,7 @@ class TodosController extends Controller
     {
         $todo->completed  = true;
         $todo->save();
-        session()->flash('success', 'Todo completed successfully');
+        session()->flash('success', 'Todoを完了しました！！');
         return redirect('/todos');
     }
 }
