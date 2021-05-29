@@ -2,22 +2,25 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Post;
 use Illuminate\Http\Request;
 
 class PostController extends Controller
 {
-    private $posts = [
-        'Title A',
-        'Title B',
-        'Title C'
-    ];
-    //
+
+
     public function index()
     {
-        return view('index')->with(['posts' => $this->posts]);
+        // $posts = Post::all();
+        // $posts = Post::orderBy('created_at', 'desc')->get();
+        $posts = Post::latest()->get();
+        return view('index')->with(['posts' => $posts]);
     }
-    public function show($id)
+
+    //Implicit Binding
+    public function show(Post $post)
     {
-        return view('posts.show')->with(['post' => $this->posts[$id]]);
+        // $post = Post::findOrFail($post);
+        return view('posts.show')->with(['post' => $post]);
     }
 }
