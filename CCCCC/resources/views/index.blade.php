@@ -10,9 +10,9 @@
         {{-- @foreach ($posts as $post)
             <li>{{ $post }}</li>
         @endforeach --}}
-        @forelse ($posts as $index => $post)
-        <a href="{{ route('posts.show',$index) }}">
-            <li>{{ $post }}</li>
+        @forelse ($posts as $post)
+        <a href="{{ route('posts.show',$post) }}">
+            <li>{{ $post->title }}</li>
         </a>
         @empty
             <li>No posts yet!</li>
