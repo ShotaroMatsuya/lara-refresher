@@ -37,8 +37,14 @@ return [
     'channels' => [
         'stack' => [
             'driver' => 'stack',
-            'channels' => ['single'],
-            'ignore_exceptions' => false,
+            // always added fluentd log handler
+            // 'channels' => ['single', 'fluent'],
+            // fluentd only
+            'channels' => ['fluent', 'single']
+        ],
+        'fluent' => [
+            'driver' => 'fluent',
+            'level' => 'debug',
         ],
 
         'single' => [

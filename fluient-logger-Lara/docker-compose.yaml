@@ -1,6 +1,7 @@
 version: '3'
 services:
   fluentd:
+    container_name: fluentd
     build:
       context: ./local
       dockerfile: Dockerfile.fluentd
@@ -16,6 +17,7 @@ services:
       FLUENTD_CONF: my_fluentd.conf
       TZ: Asia/Tokyo
   db:
+    container_name: mysql
     image: mariadb:latest
     ports:
       - 3306:3306
@@ -27,6 +29,7 @@ services:
     volumes:
       - db-data:/var/lib/mysql
   app:
+    container_name: laravel
     build:
       context: .
       dockerfile: local/Dockerfile.php
@@ -36,7 +39,14 @@ services:
       - ./app:/var/www/html:delegated
     depends_on:
       - db
+    logging:
+      driver: fluentd
+      options:
+        fluentd-address: 'localhost:24224'
+        tag: 'docker.{{.Name}}'
+
   web:
+    container_name: nginx
     build:
       context: .
       dockerfile: local/Dockerfile.nginx
@@ -49,8 +59,6 @@ services:
       - ./app:/var/www/html
     depends_on:
       - app
-    links:
-      - app
     logging:
       driver: fluentd
       options:
@@ -62,6 +70,13 @@ services:
       dockerfile: Dockerfile.composer
     volumes:
       - ./app:/var/www/html
+  artisan:
+    build:
+      context: .
+      dockerfile: local/Dockerfile.php
+    volumes:
+      - ./app:/var/www/html
+    entrypoint: ['php', '/var/www/html/artisan']
   npm:
     image: node:14
     working_dir: /var/www/html
