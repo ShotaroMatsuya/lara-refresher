@@ -1,5 +1,13 @@
 FROM php:7.3-fpm-alpine
 
+RUN echo '\
+    memory_limit = -1\n\
+    log_errors = On\n\
+    error_log = /dev/stderr\n\
+    error_reporting = E_ALL\n\
+    ' >> /usr/local/etc/php/php.ini
+
+COPY local/docker.conf /usr/local/etc/php-fpm.d/
 WORKDIR /var/www/html
 COPY ./app/composer.json ./
 
