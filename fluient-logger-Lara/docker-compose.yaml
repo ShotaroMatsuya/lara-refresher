@@ -64,6 +64,7 @@ services:
       FLUENTD_CONF: my_fluentd.conf
       TZ: Asia/Tokyo
   es:
+    container_name: es
     image: docker.elastic.co/elasticsearch/elasticsearch-oss:6.7.1
     ports:
       - '9200:9200'
@@ -71,6 +72,7 @@ services:
     volumes:
       - ${PWD}/es:/usr/share/elasticsearch/data
   kibana:
+    container_name: kibana
     build: ./kibana
     ports:
       - '5601:5601'
