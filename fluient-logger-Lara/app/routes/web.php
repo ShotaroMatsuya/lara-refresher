@@ -15,6 +15,8 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     Log::alert('debuglog@route.php');
+    Log::error("error-log@route.php");
+    Log::debug("debugメッセージだよ");
     return view('welcome');
 });
 

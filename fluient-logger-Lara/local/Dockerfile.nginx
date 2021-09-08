@@ -4,11 +4,6 @@ WORKDIR /etc/nginx/conf.d
 
 COPY web/default.conf .
 
-WORKDIR /etc/nginx/
-
-COPY web/nginx.conf .
-
-
 # rename
 # RUN mv nginx.conf default.conf
 

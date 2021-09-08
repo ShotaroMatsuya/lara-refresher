@@ -40,7 +40,7 @@ return [
             // always added fluentd log handler
             // 'channels' => ['single', 'fluent'],
             // fluentd only
-            'channels' => ['fluent', 'single']
+            'channels' => ['stdout', 'stderr', 'single']
         ],
         'fluent' => [
             'driver' => 'fluent',
@@ -77,7 +77,13 @@ return [
                 'port' => env('PAPERTRAIL_PORT'),
             ],
         ],
-
+        'stdout' => [
+            'driver' => 'monolog',
+            'handler' => StreamHandler::class,
+            'with' => [
+                'stream' => 'php://stdout',
+            ],
+        ],
         'stderr' => [
             'driver' => 'monolog',
             'level' => env('LOG_LEVEL', 'debug'),
