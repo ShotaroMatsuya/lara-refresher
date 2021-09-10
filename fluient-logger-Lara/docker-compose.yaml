@@ -55,6 +55,8 @@ services:
     build:
       context: ./
       dockerfile: local/Dockerfile.fluentd
+    # command: >
+    #   /usr/bin/fluentd -c /fluentd/etc/fluent.conf -v
     ports:
       - '24224:24224'
       - '24224:24224/udp'
@@ -80,24 +82,24 @@ services:
       - elasticsearch
     environment:
       - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
-  composer:
-    build:
-      context: ./local
-      dockerfile: Dockerfile.composer
-    volumes:
-      - ./app:/var/www/html
-  artisan:
-    build:
-      context: .
-      dockerfile: local/Dockerfile.php
-    volumes:
-      - ./app:/var/www/html
-    entrypoint: ['php', '/var/www/html/artisan']
-  npm:
-    image: node:14
-    working_dir: /var/www/html
-    entrypoint: ['npm']
-    volumes:
-      - ./app:/var/www/html
+  # composer:
+  #   build:
+  #     context: ./local
+  #     dockerfile: Dockerfile.composer
+  #   volumes:
+  #     - ./app:/var/www/html
+  # artisan:
+  #   build:
+  #     context: .
+  #     dockerfile: local/Dockerfile.php
+  #   volumes:
+  #     - ./app:/var/www/html
+  #   entrypoint: ['php', '/var/www/html/artisan']
+  # npm:
+  #   image: node:14
+  #   working_dir: /var/www/html
+  #   entrypoint: ['npm']
+  #   volumes:
+  #     - ./app:/var/www/html
 volumes:
   db-data:
