@@ -4,7 +4,12 @@
         My BBS
     </x-slot>
     {{-- lauyoutコンポーネントのslotに読み込ませたいcodeをここに書く --}}
-    <h1>My BBS</h1>
+    <h1>
+        <span>
+            My BBS
+        </span>
+        <a href="{{ route('posts.create') }}">[Add]</a>
+    </h1>
 
     <ul>
         {{-- @foreach ($posts as $post)
