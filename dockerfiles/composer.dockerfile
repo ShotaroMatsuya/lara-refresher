@@ -1,4 +1,4 @@
-FROM composer:1
+FROM composer:1.10.26
 
 WORKDIR /var/www/html
 
