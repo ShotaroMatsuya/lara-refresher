@@ -39,6 +39,22 @@ Route::get('/', function () {
     // Eloquentで書く
     $result = User::all(); //eloquentのcollection型が入る(relationshipのあるデータを取扱さいに便利)
 
+    DB::transaction(function () {
+        // try catch block is not necessary as well as DB::rollBack();
+        try {
+            DB::table('users')->delete();
+            $result = DB::table('users')->where('id',4)->update(['email' => 'none']);
+            if(!$result)
+            {
+                throw new \Exception;
+            }
+        } catch(\Exception $e) {
+            DB::rollBack();
+        }
+  
+    }, 5); // optional third argument, how many times a transaction should be reattempted
+
+
     dump($result);
 
     return view('welcome');
