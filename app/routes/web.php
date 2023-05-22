@@ -62,7 +62,26 @@ Route::get('/', function () {
     // dump(factory(App\Comment::class,3)->make());  //実際にはクエリは実行されない(Modelインスタンスを作るだけ)
     // dump(factory(App\Comment::class,3)->create()); // 実際にDBに保存される
 
-    dump($users, $comments);
+    // QueryBuilderまとめ
+    // 1. SELECT
+    // $users = DB::table('users')->get();
+    // $users = DB::table('users')->pluck('email');
+    // $user = DB::table('users')->where('name', 'Mrs. Odie Metz')->first();
+    // $user = DB::table('users')->where('name', 'Mrs. Odie Metz')->value('email');
+    // $user = DB::table('users')->find(1);
+
+    // $comments= DB::table('comments')->select('content as comment_content')->get();
+    // $comments= DB::table('comments')->select('user_id')->distinct()->get();
+
+    // $result = DB::table('comments')->count();
+    // $result = DB::table('comments')->max('user_id');
+    // $result = DB::table('comments')->sum('user_id');
+    // min, avg
+
+    // $result = DB::table('comments')->where('content', 'content')->exists();
+    $result = DB::table('comments')->where('content', 'content')->doesntExist();
+
+    dump($result);
 
     return view('welcome');
 });
