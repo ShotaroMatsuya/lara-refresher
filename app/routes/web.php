@@ -37,25 +37,32 @@ Route::get('/', function () {
     // $result = DB::select('select * from users'); //arrayが入る
     // $result = DB::table('users')->select()->get(); //collection型が入る
     // Eloquentで書く
-    $result = User::all(); //eloquentのcollection型が入る(relationshipのあるデータを取扱さいに便利)
+    // $result = User::all(); //eloquentのcollection型が入る(relationshipのあるデータを取扱さいに便利)
 
-    DB::transaction(function () {
-        // try catch block is not necessary as well as DB::rollBack();
-        try {
-            DB::table('users')->delete();
-            $result = DB::table('users')->where('id',4)->update(['email' => 'none']);
-            if(!$result)
-            {
-                throw new \Exception;
-            }
-        } catch(\Exception $e) {
-            DB::rollBack();
-        }
+    // DB::transaction(function () {
+    //     // try catch block is not necessary as well as DB::rollBack();
+    //     try {
+    //         DB::table('users')->delete();
+    //         $result = DB::table('users')->where('id',4)->update(['email' => 'none']);
+    //         if(!$result)
+    //         {
+    //             throw new \Exception;
+    //         }
+    //     } catch(\Exception $e) {
+    //         DB::rollBack();
+    //     }
   
-    }, 5); // optional third argument, how many times a transaction should be reattempted
+    // }, 5); // optional third argument, how many times a transaction should be reattempted
+    
+    // commentsテーブルから取得
+    $users = DB::table('users')->get();
+    $comments = DB::table('comments')->get();
 
+    // factoryの使い方
+    // dump(factory(App\Comment::class,3)->make());  //実際にはクエリは実行されない(Modelインスタンスを作るだけ)
+    // dump(factory(App\Comment::class,3)->create()); // 実際にDBに保存される
 
-    dump($result);
+    dump($users, $comments);
 
     return view('welcome');
 });
