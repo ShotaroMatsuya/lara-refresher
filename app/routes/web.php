@@ -148,9 +148,28 @@ Route::get('/', function () {
     //             ->whereJsonContains('meta->skills', 'Laravel')
     //             ->get();
 
-    $result = DB::table('users')
-                ->where('meta->settings->site_language', 'en')
-                ->get();
+    // $result = DB::table('users')
+    //             ->where('meta->settings->site_language', 'en')
+    //             ->get();
+
+    // dump($result);
+
+    
+    // 
+    return $result = DB::table('comments')->paginate(3); // other statements like where clause are also possible
+    // simplePaginate(3); // paginateとの違いは前ページか後ページのリンクしか渡さない
+                
+    dump($result->items()); //配列を返す
+
+
+        // $result = DB::statement('ALTER TABLE comments ADD FULLTEXT fulltext_index(content)'); // MySQL >= 5.6
+    // $result = DB::table('comments')
+    //     ->whereRaw("MATCH(content) AGAINST(? IN BOOLEAN MODE)", ['inventore'])
+    //     ->get();
+
+    $result = DB::table('comments')
+    ->where("content", 'like', '%inventore%')
+    ->get(); //like句よりもfull text　indexの方が速い
 
     dump($result);
 
