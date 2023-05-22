@@ -156,22 +156,54 @@ Route::get('/', function () {
 
     
     // 
-    return $result = DB::table('comments')->paginate(3); // other statements like where clause are also possible
-    // simplePaginate(3); // paginateとの違いは前ページか後ページのリンクしか渡さない
+    // return $result = DB::table('comments')->paginate(3); // other statements like where clause are also possible
+    // // simplePaginate(3); // paginateとの違いは前ページか後ページのリンクしか渡さない
                 
-    dump($result->items()); //配列を返す
+    // dump($result->items()); //配列を返す
 
 
-        // $result = DB::statement('ALTER TABLE comments ADD FULLTEXT fulltext_index(content)'); // MySQL >= 5.6
-    $result = DB::table('comments')
-        ->whereRaw("MATCH(content) AGAINST(? IN BOOLEAN MODE)", ['+inventore -pariatur'])
-        ->get(); // inventoreを含み、pariaturを含まないという条件で検索
+    //     // $result = DB::statement('ALTER TABLE comments ADD FULLTEXT fulltext_index(content)'); // MySQL >= 5.6
+    // $result = DB::table('comments')
+    //     ->whereRaw("MATCH(content) AGAINST(? IN BOOLEAN MODE)", ['+inventore -pariatur'])
+    //     ->get(); // inventoreを含み、pariaturを含まないという条件で検索
+
+    // // $result = DB::table('comments')
+    // // ->where("content", 'like', '%inventore%')
+    // // ->get(); //like句よりもfull text　indexの方が速い
+
+    // dump($result);
+
+
+        // $result = DB::table('comments')
+    // // ->where("content", 'like', '%inventore%')
+    // ->whereRaw("content LIKE '%inventore%'") // be careful about SQL injections!
+    // // ->where(DB::raw("content LIKE '%inventore%'")) // not working because where() needs two parameters
+    // ->get();
 
     // $result = DB::table('comments')
-    // ->where("content", 'like', '%inventore%')
-    // ->get(); //like句よりもfull text　indexの方が速い
+    //     // ->select(DB::raw('count(user_id) as number_of_comments, users.name'))
+    //     ->selectRaw('count(user_id) as number_of_comments, users.name',[])
+    //     ->join('users','users.id','=','comments.user_id')
+    //     ->groupBy('user_id')
+    //     ->get();
 
+    // whereRaw / orWhereRaw
+    // havingRaw / orHavingRaw
+    // orderByRaw
+    // groupByRaw
+
+    // $result = DB::table('comments')
+    //             ->orderByRaw('updated_at - created_at DESC')
+    //             ->get();
+
+    $result = DB::table('users')
+                ->selectRaw('LENGTH(name) as name_lenght, name')
+                ->orderByRaw('LENGTH(name) DESC')
+                ->get();
+                
     dump($result);
+
+    return view('welcome');
 
     return view('welcome');
 });
