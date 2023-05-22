@@ -14,7 +14,11 @@ class CreateCommentsTable extends Migration
     public function up()
     {
         Schema::create('comments', function (Blueprint $table) {
+            // $table->engine = 'InnoDB';
             $table->id();
+            $table->text('content')->nullable(false);
+            $table->unsignedBigInteger('user_id');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();
         });
     }
@@ -29,3 +33,4 @@ class CreateCommentsTable extends Migration
         Schema::dropIfExists('comments');
     }
 }
+
