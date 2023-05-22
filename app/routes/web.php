@@ -129,20 +129,31 @@ Route::get('/', function () {
     //     ['updated_at', '>', 'created_at']
     // ]
 
+    // // 相関サブクエリ
+    // $result = DB::table('users')
+    //        ->whereExists(function ($query) {
+    //            $query->select('id')
+    //                  ->from('reservations')
+    //                  ->whereRaw('reservations.user_id = users.id')
+    //                  ->where('check_in', '=', '2020-05-12')
+    //                  ->limit(1);
+    //        })
+    //        ->get();
+
+    // dump($result);
+    
+    
+    // Json型の操作
+    // $result = DB::table('users')
+    //             ->whereJsonContains('meta->skills', 'Laravel')
+    //             ->get();
+
     $result = DB::table('users')
-           ->whereExists(function ($query) {
-               $query->select('id')
-                     ->from('reservations')
-                     ->whereRaw('reservations.user_id = users.id')
-                     ->where('check_in', '=', '2020-05-12')
-                     ->limit(1);
-           })
-           ->get();
+                ->where('meta->settings->site_language', 'en')
+                ->get();
 
     dump($result);
 
     return view('welcome');
-
-    return view('welcome'); 
 });
 
