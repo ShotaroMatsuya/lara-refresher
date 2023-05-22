@@ -23,18 +23,27 @@ services:
       - ./dockerfiles/xdebug.ini:/usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
   mysql:
     platform: linux/x86_64 # M1チップ対応のため追記
-    image: mysql:5.7
+    image: mysql:8.0.33
     ports:
       - '3306:3306'
     env_file:
       - ./env/mysql.env
     volumes:
       - data1:/var/lib/mysql
-      - ./initdb.d:/docker-entrypoint-initdb.d
+      - ./env/conf/my.cnf:/etc/mysql/conf.d/my.cnf
+      - ./env/initdb.d:/docker-entrypoint-initdb.d
+  redis:
+    image: redis:latest
+    volumes:
+      - ./redis/data:/data
+    ports:
+      - 6379:6379
+    command: redis-server
   composer:
     build:
       context: ./dockerfiles
       dockerfile: composer.dockerfile
+    entrypoint: ['composer', '--ignore-platform-reqs']
     volumes:
       - ./app:/var/www/html
   artisan:
@@ -46,7 +55,7 @@ services:
       - ./app:/var/www/html
     entrypoint: ['php', '/var/www/html/artisan']
   npm:
-    image: node:14
+    image: node:16
     working_dir: /var/www/html
     entrypoint: ['npm']
     volumes:

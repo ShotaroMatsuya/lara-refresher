@@ -1,10 +1,10 @@
-FROM php:7.4-fpm-alpine
+FROM php:8.0-fpm-alpine
 
-# xdebugインストール
-RUN apk add autoconf build-base \
-    && pecl install xdebug \
-    && docker-php-ext-enable xdebug 
-RUN docker-php-ext-install pdo pdo_mysql mysqli
+# 必要なパッケージのインストール
+RUN apk add autoconf build-base sqlite-dev\
+    && pecl install xdebug-3.1.5 redis \
+    && docker-php-ext-enable xdebug redis
+RUN docker-php-ext-install pdo pdo_mysql mysqli pdo_sqlite
 
 COPY dockerfiles/php.ini /usr/local/etc/php/php.ini
 
@@ -12,7 +12,7 @@ WORKDIR /var/www/html
 
 COPY app .
 
-COPY --from=composer:1.10.26 /usr/bin/composer /usr/bin/composer
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
 RUN composer update \
     && composer global require hirak/prestissimo --ignore-platform-reqs \
