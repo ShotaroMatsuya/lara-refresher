@@ -163,13 +163,13 @@ Route::get('/', function () {
 
 
         // $result = DB::statement('ALTER TABLE comments ADD FULLTEXT fulltext_index(content)'); // MySQL >= 5.6
-    // $result = DB::table('comments')
-    //     ->whereRaw("MATCH(content) AGAINST(? IN BOOLEAN MODE)", ['inventore'])
-    //     ->get();
-
     $result = DB::table('comments')
-    ->where("content", 'like', '%inventore%')
-    ->get(); //like句よりもfull text　indexの方が速い
+        ->whereRaw("MATCH(content) AGAINST(? IN BOOLEAN MODE)", ['+inventore -pariatur'])
+        ->get(); // inventoreを含み、pariaturを含まないという条件で検索
+
+    // $result = DB::table('comments')
+    // ->where("content", 'like', '%inventore%')
+    // ->get(); //like句よりもfull text　indexの方が速い
 
     dump($result);
 
