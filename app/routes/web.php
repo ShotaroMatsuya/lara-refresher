@@ -79,10 +79,36 @@ Route::get('/', function () {
     // min, avg
 
     // $result = DB::table('comments')->where('content', 'content')->exists();
-    $result = DB::table('comments')->where('content', 'content')->doesntExist();
+    // $result = DB::table('comments')->where('content', 'content')->doesntExist();
+    
+
+    // where句
+    // $result = DB::table('rooms')->get();
+    // $result = DB::table('rooms')->where('price','<',200)->get(); // = like, etc.
+
+    // AND条件
+    // $result = DB::table('rooms')->where([
+    //     ['room_size', '2'],
+    //     ['price', '<', '400'],
+    // ])->get();
+    
+    // OR条件
+    //  $result = DB::table('rooms')
+    //     ->where('room_size' ,'2')
+    //     ->orWhere('price', '<' ,'400')
+    //     ->get();
+    
+    // 無名関数は()になる
+    $result = DB::table('rooms')
+            ->where('price', '<' ,'400')
+            ->orWhere(function($query) {
+                $query->where('room_size', '>' ,'1')
+                      ->where('room_size', '<' ,'4');
+            })
+            ->get();
 
     dump($result);
 
-    return view('welcome');
+    return view('welcome'); 
 });
 
