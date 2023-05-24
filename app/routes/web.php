@@ -1,6 +1,7 @@
 <?php
 
 use App\User;
+use App\Comment;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 /*
@@ -196,15 +197,31 @@ Route::get('/', function () {
     //             ->orderByRaw('updated_at - created_at DESC')
     //             ->get();
 
-    $result = DB::table('users')
-                ->selectRaw('LENGTH(name) as name_lenght, name')
-                ->orderByRaw('LENGTH(name) DESC')
-                ->get();
+    // $result = DB::table('users')
+    //             ->selectRaw('LENGTH(name) as name_lenght, name')
+    //             ->orderByRaw('LENGTH(name) DESC')
+    //             ->get();
                 
+    // dump($result);
+
+
+
+
+    // $flight = Comment::find(1);
+    // $result = $flight->delete();
+
+    // $result = Comment::destroy([1]);
+
+    // $result = Comment::where('rating', 1)->delete();
+
+    // $result = Comment::withTrashed()->get(); // onlyTrashed()
+    // $result = Comment::withTrashed()->restore(); // onlyTrashed()
+
+    $result = Comment::where('rating', 1)->forceDelete();
+
     dump($result);
 
     return view('welcome');
-
     return view('welcome');
 });
 
