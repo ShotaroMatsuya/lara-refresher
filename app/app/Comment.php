@@ -39,14 +39,19 @@ class Comment extends Model
         });
     }
 
-    public function getRatingAttribute($value)
-    {
-        return $value + 10;
-    }
+    // public function getRatingAttribute($value)
+    // {
+    //     return $value + 10;
+    // }
 
     public function getWhoWhatAttribute()
     {
         return "user {$this->user_id} rates {$this->rating}";
+    }
+
+    public function setRatingAttribute($value)
+    {
+        $this->attributes['rating'] = $value + 1;
     }
 }
 

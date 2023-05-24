@@ -225,15 +225,16 @@ Route::get('/', function () {
 
     // dump($result);
 
-    Route::get('/', function () {
 
-        $result = Comment::find(1);
-    
-        // dump($result->rating);
-        dump($result->who_what);
-    
-        return view('welcome');
-    });
-    
+
+
+
+    $result = Comment::find(1);
+    $result->rating = 4;
+    $result->save();
+
+    dump($result->rating);
+
+    return view('welcome');
 });
 
