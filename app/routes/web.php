@@ -217,11 +217,14 @@ Route::get('/', function () {
     // $result = Comment::withTrashed()->get(); // onlyTrashed()
     // $result = Comment::withTrashed()->restore(); // onlyTrashed()
 
-    $result = Comment::where('rating', 1)->forceDelete();
+    // $result = Comment::where('rating', 1)->forceDelete();
+
+    // dump($result);
+
+    $result = Comment::all();
 
     dump($result);
 
-    return view('welcome');
     return view('welcome');
 });
 
