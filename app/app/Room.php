@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Room extends Model
 {
+    // protected $fillable = ['rating', 'content', 'user_id'];
+    protected $guarded = [];
 
     // protected static function booted()
     // {
