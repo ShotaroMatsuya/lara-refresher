@@ -229,11 +229,26 @@ Route::get('/', function () {
 
 
 
-    $result = Comment::find(1);
-    $result->rating = 4;
-    $result->save();
+    // $result = Comment::find(1);
+    // $result->rating = 4;
+    // $result->save();
 
-    dump($result->rating);
+    // dump($result->rating);
+
+    // return view('welcome');
+        // $result = Comment::find(1);
+    // $result->rating = 4;
+    // $result->save();
+
+    $result = User::select([
+        'users.*',
+        'last_commented_at' => Comment::selectRaw('MAX(created_at)')
+            ->whereColumn('user_id', 'users.id')
+    ])->withCasts([
+        'last_commented_at' => 'datetime:Y-m-d' // date and datetime works only for array or json result
+    ])->get()->toJson();
+
+    dump($result);
 
     return view('welcome');
 });
