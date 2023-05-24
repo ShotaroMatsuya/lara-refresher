@@ -35,7 +35,18 @@ class Comment extends Model
     protected static function booted()
     {
         static::retrieved(function ($comment) {
-            echo $comment->rating;
+            // echo $comment->rating;
         });
     }
+
+    public function getRatingAttribute($value)
+    {
+        return $value + 10;
+    }
+
+    public function getWhoWhatAttribute()
+    {
+        return "user {$this->user_id} rates {$this->rating}";
+    }
 }
+

@@ -221,10 +221,19 @@ Route::get('/', function () {
 
     // dump($result);
 
-    $result = Comment::all();
+    // $result = Comment::all();
 
-    dump($result);
+    // dump($result);
 
-    return view('welcome');
+    Route::get('/', function () {
+
+        $result = Comment::find(1);
+    
+        // dump($result->rating);
+        dump($result->who_what);
+    
+        return view('welcome');
+    });
+    
 });
 
