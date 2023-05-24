@@ -6,9 +6,17 @@ use Illuminate\Database\Eloquent\Model;
 
 class Room extends Model
 {
-    // protected $table = 'my_rooms';
-    // protected $primaryKey = 'room_id';
-    // public $timestamps = false;
-    // protected $connection = 'sqlite';
+
+    // protected static function booted()
+    // {
+    //     static::addGlobalScope('rating', function (Builder $builder) {
+    //         $builder->where('rating', '>', 2);
+    //     });
+    // }
+
+    public function scopeRating($query, int $value = 4)
+    {
+        return $query->where('rating', '>', $value);
+    }
 }
 
