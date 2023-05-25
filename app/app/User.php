@@ -37,5 +37,9 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'meta' => 'json',
     ];
+
+    public function address() {
+        return $this->hasOne('App\Address', 'user_id', 'id'); // 2nd 3rd args optional
+    }
 }
 
