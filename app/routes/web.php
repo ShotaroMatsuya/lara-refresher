@@ -209,11 +209,25 @@ Route::get('/', function () {
     // // dump($result->address->street, $result->address->number);
     // dump($result->user->name);
 
-    $result = User::find(1);
-    $result = App\Comment::find(1);
+    // $result = User::find(1);
+    // $result = App\Comment::find(1);
 
-    // dump($result->comments);
-    dump($result->user->name);
+    // // dump($result->comments);
+    // dump($result->user->name);
+
+    // $result = App\City::find(1);
+    // dump($result->rooms);
+
+    $result = App\Room::where('room_size', 3)->get();
+    // dump($result[0]->cities);
+
+    foreach($result as $room) {
+        foreach($room->cities as $city) {
+            echo $city->name. '<br>';
+            echo $city->pivot->room_id. '<br>';
+        }
+    }
+
 
     return view('welcome');
 });
