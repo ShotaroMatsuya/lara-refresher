@@ -1,6 +1,13 @@
 <?php
 
+use App\City;
+use App\Room;
 use App\User;
+use App\Image;
+use App\Address;
+use App\Comment;
+use App\Company;
+use App\Reservation;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 /*
@@ -231,7 +238,14 @@ Route::get('/', function () {
 
     // dump($result->country->name);
 
-    $result = App\Company::find(2);
-    dump($result->reservations);
+    // $result = App\Company::find(2);
+    // dump($result->reservations);
+
+    // $result = User::find(3);
+    $result = Image::find(7);
+
+    // dump($result->image);
+    dump($result->imageable);
+
     return view('welcome');
 });
