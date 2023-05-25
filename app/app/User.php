@@ -41,5 +41,9 @@ class User extends Authenticatable
     public function address() {
         return $this->hasOne('App\Address', 'user_id', 'id'); // 2nd 3rd args optional
     }
+
+    public function comments() {
+        return $this->hasMany('App\Comment', 'user_id', 'id'); // 2nd 3rd args optional
+    }
 }
 

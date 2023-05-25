@@ -203,10 +203,16 @@ Route::get('/', function () {
                 
     // dump($result);
 
-    $result = User::find(1);
-    $result = App\Address::find(1);
+    // $result = User::find(1);
+    // $result = App\Address::find(1);
 
-    // dump($result->address->street, $result->address->number);
+    // // dump($result->address->street, $result->address->number);
+    // dump($result->user->name);
+
+    $result = User::find(1);
+    $result = App\Comment::find(1);
+
+    // dump($result->comments);
     dump($result->user->name);
 
     return view('welcome');
