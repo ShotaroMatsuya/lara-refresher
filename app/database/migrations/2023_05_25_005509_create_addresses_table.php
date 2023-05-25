@@ -17,6 +17,7 @@ class CreateAddressesTable extends Migration
             $table->id();
             $table->integer('number');
             $table->string('street');
+            $table->string('country');
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();

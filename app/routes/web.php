@@ -218,16 +218,18 @@ Route::get('/', function () {
     // $result = App\City::find(1);
     // dump($result->rooms);
 
-    $result = App\Room::where('room_size', 3)->get();
-    // dump($result[0]->cities);
+    // $result = App\Room::where('room_size', 3)->get();
+    // // dump($result[0]->cities);
 
-    foreach($result as $room) {
-        foreach($room->cities as $city) {
-            echo $city->name. '<br>';
-            echo $city->pivot->room_id. '<br>';
-        }
-    }
+    // foreach($result as $room) {
+    //     foreach($room->cities as $city) {
+    //         echo $city->name. '<br>';
+    //         echo $city->pivot->room_id. '<br>';
+    //     }
+    // }
+    $result = App\Comment::find(6);
 
+    dump($result->country->name);
 
     return view('welcome');
 });
