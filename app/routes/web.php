@@ -227,9 +227,11 @@ Route::get('/', function () {
     //         echo $city->pivot->room_id. '<br>';
     //     }
     // }
-    $result = App\Comment::find(6);
+    // $result = App\Comment::find(6);
 
-    dump($result->country->name);
+    // dump($result->country->name);
 
+    $result = App\Company::find(2);
+    dump($result->reservations);
     return view('welcome');
 });
