@@ -196,15 +196,18 @@ Route::get('/', function () {
     //             ->orderByRaw('updated_at - created_at DESC')
     //             ->get();
 
-    $result = DB::table('users')
-                ->selectRaw('LENGTH(name) as name_lenght, name')
-                ->orderByRaw('LENGTH(name) DESC')
-                ->get();
+    // $result = DB::table('users')
+    //             ->selectRaw('LENGTH(name) as name_lenght, name')
+    //             ->orderByRaw('LENGTH(name) DESC')
+    //             ->get();
                 
-    dump($result);
+    // dump($result);
 
-    return view('welcome');
+    $result = User::find(1);
+    $result = App\Address::find(1);
+
+    // dump($result->address->street, $result->address->number);
+    dump($result->user->name);
 
     return view('welcome');
 });
-
