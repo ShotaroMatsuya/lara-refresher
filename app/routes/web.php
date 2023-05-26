@@ -247,11 +247,16 @@ Route::get('/', function () {
     // // dump($result->image);
     // dump($result->imageable);
 
-    $result = Room::find(10);
-    $result = Comment::find(2);
+    // $result = Room::find(10);
+    // $result = Comment::find(2);
 
-    // dump($result->comments);
-    dump($result->commentable);
+    // // dump($result->comments);
+    // dump($result->commentable);
+    // $result = User::find(1);
+    $result = Room::find(4);
+
+    // dump($result->likedImages, $result->likedRooms);
+    dump($result->likes);
 
     return view('welcome');
 });

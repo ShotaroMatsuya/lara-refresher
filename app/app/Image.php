@@ -15,5 +15,10 @@ class Image extends Model
     {
         return $this->morphMany('App\Comment', 'commentable');
     }
+
+    public function likes()
+    {
+        return $this->morphToMany('App\User', 'likeable');
+    }
 }
 
