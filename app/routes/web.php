@@ -242,10 +242,16 @@ Route::get('/', function () {
     // dump($result->reservations);
 
     // $result = User::find(3);
-    $result = Image::find(7);
+    // $result = Image::find(7);
 
-    // dump($result->image);
-    dump($result->imageable);
+    // // dump($result->image);
+    // dump($result->imageable);
+
+    $result = Room::find(10);
+    $result = Comment::find(2);
+
+    // dump($result->comments);
+    dump($result->commentable);
 
     return view('welcome');
 });
