@@ -11,9 +11,9 @@ class UserSeeder extends Seeder
      */
     public function run()
     {
-        factory(App\User::class, 2000)
-            ->create()
-            ->each(function ($user) {
+        factory(App\User::class, 3)
+           ->create()
+           ->each(function ($user) {
                 $user->address()->save(factory(App\Address::class)->make());
             }); // no need  to use faker unique()
 

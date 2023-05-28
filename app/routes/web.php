@@ -402,12 +402,39 @@ Route::get('/', function () {
 
     // $result = DB::table('users')->join('comments', 'users.id', '=', 'comments.user_id')->get();
 
-    $result = DB::select('select * from `users` inner join `comments` on `users`.`id` = `comments`.`user_id`');
+    // $result = DB::select('select * from `users` inner join `comments` on `users`.`id` = `comments`.`user_id`');
 
-    // $result = DB::statement('DROP TABLE addresses');
-    // $result = DB::statement('ALTER TABLE rooms ADD INDEX index_name (price)');
+    // // $result = DB::statement('DROP TABLE addresses');
+    // // $result = DB::statement('ALTER TABLE rooms ADD INDEX index_name (price)');
+
+    // dump($result);
+
+    // $result = DB::table('comments')
+    // ->selectRaw('count(rating) as rating_count, rating') // and other aggregate functions like avg, sum, max, min, etc.
+    // ->groupBy('rating')
+    // ->orderBy('rating_count', 'desc')
+    // ->get();
+
+    // $result = DB::table('rooms')
+    // ->orderByRaw('sqrt(room_number)')
+    // ->get();
+
+    // $result = DB::table('comments')
+    // ->select('content')
+    // ->selectRaw('CASE WHEN rating = 5 THEN "Very good" WHEN rating = 1 THEN "Very bad" ELSE "ok" END as text_rating')
+    // ->get();
+
+    // $result = Reservation::select('*')
+    //         ->selectRaw('DATEDIFF(check_out, check_in) as nights')
+    //         ->orderBy('nights', 'DESC')
+    //         ->get();
+
+    $additional_fee = 10;
+    $result = Room::selectRaw("room_size, room_number, price + $additional_fee as final_price")->get();
+            
 
     dump($result);
+
 
     return view('welcome');
 });
