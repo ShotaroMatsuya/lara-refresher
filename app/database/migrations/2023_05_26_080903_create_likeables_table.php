@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateCommentsTable extends Migration
+class CreateLikeablesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,17 +13,13 @@ class CreateCommentsTable extends Migration
      */
     public function up()
     {
-        Schema::create('comments', function (Blueprint $table) {
-            // $table->engine = 'InnoDB';
+        Schema::create('likeables', function (Blueprint $table) {
             $table->id();
-            $table->text('content')->nullable(false);
-            $table->integer('rating')->nullable();
+            $table->string('likeable_type');
+            $table->integer('likeable_id');
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-            $table->string('commentable_type');
-            $table->integer('commentable_id');
             $table->timestamps();
-            $table->softDeletes();
         });
     }
 
@@ -34,7 +30,6 @@ class CreateCommentsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('comments');
+        Schema::dropIfExists('likeables');
     }
 }
-

@@ -1,7 +1,13 @@
 <?php
 
+use App\City;
+use App\Room;
 use App\User;
+use App\Image;
+use App\Address;
 use App\Comment;
+use App\Company;
+use App\Reservation;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 /*
@@ -204,52 +210,231 @@ Route::get('/', function () {
                 
     // dump($result);
 
+    // $result = User::find(1);
+    // $result = App\Address::find(1);
+
+    // // dump($result->address->street, $result->address->number);
+    // dump($result->user->name);
+
+    // $result = User::find(1);
+    // $result = App\Comment::find(1);
+
+    // // dump($result->comments);
+    // dump($result->user->name);
+
+    // $result = App\City::find(1);
+    // dump($result->rooms);
+
+    // $result = App\Room::where('room_size', 3)->get();
+    // // dump($result[0]->cities);
+
+    // foreach($result as $room) {
+    //     foreach($room->cities as $city) {
+    //         echo $city->name. '<br>';
+    //         echo $city->pivot->room_id. '<br>';
+    //     }
+    // }
+    // $result = App\Comment::find(6);
+
+    // dump($result->country->name);
+
+    // $result = App\Company::find(2);
+    // dump($result->reservations);
+
+    // $result = User::find(3);
+    // $result = Image::find(7);
+
+    // // dump($result->image);
+    // dump($result->imageable);
+
+    // $result = Room::find(10);
+    // $result = Comment::find(2);
+
+    // // dump($result->comments);
+    // dump($result->commentable);
+    // $result = User::find(1);
+    // $result = Room::find(4);
+
+    // // dump($result->likedImages, $result->likedRooms);
+    // dump($result->likes);
+
+    // $result = User::find(1)->comments()
+    //             ->where('rating', '>', 3)
+    //             ->orWhere('rating', '<', 2)
+    //             ->get();
+    // $result = User::find(1)->comments()
+    //             ->where(function($query){
+    //                 return $query->where('rating', '>', 3)
+    //                         ->orWhere('rating', '<', 2);
+    //             })
+    //             ->get();
+
+    // $result = App\User::has('comments', '>=', 6)->get();
+    // $result = App\Comment::has('user.address')->get();
 
 
+    // $result = App\User::whereHas('comments', function ($query) {
+    //     $query->where('rating', '>', 2);
+    // }, '>=', 2)->get();
 
-    // $flight = Comment::find(1);
-    // $result = $flight->delete();
+    // $result = App\User::doesntHave('comments')->get(); // ->orDoesntHave
 
-    // $result = Comment::destroy([1]);
+    // $result = App\User::whereDoesntHave('comments', function ($query) {
+    //     $query->where('rating', '<', 2);
+    // })->get(); // ->orWhereDoesntHave
 
-    // $result = Comment::where('rating', 1)->delete();
+    // $result = App\Reservation::whereDoesntHave('user.comments', function ($query) {
+    //     $query->where('rating', '<', 2);
+    // })->get(); // more realistic scenario: give me all posts written by users who rated by at lest 3 stars
 
-    // $result = Comment::withTrashed()->get(); // onlyTrashed()
-    // $result = Comment::withTrashed()->restore(); // onlyTrashed()
+    // $result = App\User::withCount('comments')->get();
 
-    // $result = Comment::where('rating', 1)->forceDelete();
-
-    // dump($result);
-
-    // $result = Comment::all();
-
-    // dump($result);
-
-
-
-
-
-    // $result = Comment::find(1);
-    // $result->rating = 4;
-    // $result->save();
-
-    // dump($result->rating);
+    // $result = App\User::withCount([
+    //     'comments',
+    //     'comments as negative_comments_count' => function ($query) {
+    //         $query->where('rating', '<=', 2);
+    //     },
+    // ])->get();
+          
+    // dump($result[0]->comments_count,$result[0]->negative_comments_count);
 
     // return view('welcome');
-        // $result = Comment::find(1);
-    // $result->rating = 4;
-    // $result->save();
+        // $result = App\Comment::whereHasMorph(
+    //     'commentable',
+    //     ['App\Image', 'App\Room'],
+    //     function ($query, $type) {
 
-    $result = User::select([
-        'users.*',
-        'last_commented_at' => Comment::selectRaw('MAX(created_at)')
-            ->whereColumn('user_id', 'users.id')
-    ])->withCasts([
-        'last_commented_at' => 'datetime:Y-m-d' // date and datetime works only for array or json result
-    ])->get()->toJson();
+    //         if ($type === 'App\Room')
+    //         {
+    //             $query->where('room_size', '>', 2);
+    //             $query->orWhere('room_size', '<', 2);
+    //         }
+    //         if ($type === 'App\Image')
+    //         {
+    //             $query->where('path', 'like', '%lorem%');
+    //         }
+
+    //     }
+    // )->get();
+
+    // $result = Comment::with(['commentable' => function ($morphTo) {
+    //     $morphTo->morphWithCount([
+    //         Room::class => ['comments'],
+    //         Image::class => ['comments'],
+    //     ]);
+    // }])->find(3);
+
+    // $result = Comment::find(3)
+    // ->loadMorphCount('commentable', [
+    //     Room::class => ['comments'],
+    //     Image::class => ['comments'],
+    // ]);
+
+    // dump($result);
+
+        // $user = User::find(1);
+    // $result = $user->address()->delete();
+    // $result = $user->address()->saveMany([   // save(new Address)
+    //     new Address(['number' => 1, 'street' => 'street', 'country' => 'USA'])
+    // ]);
+
+    // $result = $user->address()->createMany([ // create()
+    //     ['number' => 2, 'street' => 'street2', 'country' => 'Mexico']
+    // ]);
+
+    // $user = User::find(2);
+    // $address = Address::find(2);
+    // $address->user()->associate($user);
+    // $result = $address->save();
+
+    // $address->user()->dissociate();
+    // $result = $address->save();
+
+    // $room = Room::find(1);
+    // $result = $room->cities()->attach(1);
+    // $result = $room->cities()->detach([1]); // without argument all cities will be detached
+
+    // $comment = Comment::find(1);
+    // $comment->content = 'Edit to this comment!';
+    // $result = $comment->save();
+
+    // dump($result);
+    // $city = City::find(1);
+    // $result = $city->rooms()->attach(1);
+
+    // dump($result);
+    // $result = User::all();
+    // $result = User::with(['address' => function($query){
+    //     $query->where('street', 'like', '%Garden');
+    // }])->get(); // ['address', 'otherRelation']
+
+    // foreach($result as $user)
+    // {
+    //     echo "{$user->address->street} <br>";
+    // }
+
+    // $result = Reservation::with('user.address')->get();
+
+    // foreach($result as $reservation)
+    // {
+    //     echo "{$reservation->user->address->street} <br>";
+    // }
+
+    // lazy-eager loading:
+    // $result = User::all();
+    // $result->load('address');  // address => function($query) {...}
+
+    // eager loading nested polimorphic relations
+    // $result = Image::with(['imageable' => function ($morphTo) {
+    //     $morphTo->morphWith([
+    //         User::class => ['likedImages']
+    //     ]);
+    // }])->get();
+
+
+    // lazy-eager loading nested polimorphic relations
+    // $result = Image::with('imageable')
+    // ->get();
+    // $result->loadMorph('imageable', [User::class => ['likedImages']]);
+
+    // dump($result);
+    // $result = User::with('comments')->get();
+
+    // $result = DB::table('users')->join('comments', 'users.id', '=', 'comments.user_id')->get();
+
+    // $result = DB::select('select * from `users` inner join `comments` on `users`.`id` = `comments`.`user_id`');
+
+    // // $result = DB::statement('DROP TABLE addresses');
+    // // $result = DB::statement('ALTER TABLE rooms ADD INDEX index_name (price)');
+
+    // dump($result);
+
+    // $result = DB::table('comments')
+    // ->selectRaw('count(rating) as rating_count, rating') // and other aggregate functions like avg, sum, max, min, etc.
+    // ->groupBy('rating')
+    // ->orderBy('rating_count', 'desc')
+    // ->get();
+
+    // $result = DB::table('rooms')
+    // ->orderByRaw('sqrt(room_number)')
+    // ->get();
+
+    // $result = DB::table('comments')
+    // ->select('content')
+    // ->selectRaw('CASE WHEN rating = 5 THEN "Very good" WHEN rating = 1 THEN "Very bad" ELSE "ok" END as text_rating')
+    // ->get();
+
+    // $result = Reservation::select('*')
+    //         ->selectRaw('DATEDIFF(check_out, check_in) as nights')
+    //         ->orderBy('nights', 'DESC')
+    //         ->get();
+
+    $additional_fee = 10;
+    $result = Room::selectRaw("room_size, room_number, price + $additional_fee as final_price")->get();
+            
 
     dump($result);
 
+
     return view('welcome');
 });
-

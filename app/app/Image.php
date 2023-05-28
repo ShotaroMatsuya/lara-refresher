@@ -4,11 +4,11 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Room extends Model
+class Image extends Model
 {
-    public function cities()
+    public function imageable()
     {
-        return $this->belongsToMany('App\City', 'city_room', 'room_id', 'city_id')->withPivot('created_at','updated_at')->using('App\CityRoom'); // 1st 2nd 3rd args are optional
+        return $this->morphTo();
     }
 
     public function comments()
