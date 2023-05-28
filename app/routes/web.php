@@ -10,6 +10,8 @@ use App\Company;
 use App\Reservation;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
+use App\Http\Resources\UserResource;
+use App\Http\Resources\UsersCollection;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -435,11 +437,17 @@ Route::get('/', function () {
 
     // dump($result);
 
-    $result = User::with('comments')->get()->makeVisible('password')->toArray(); // makeHidden()
-    // $result = User::with('comments')->get()->toJson();
+    // $result = User::with('comments')->get()->makeVisible('password')->toArray(); // makeHidden()
+    // // $result = User::with('comments')->get()->toJson();
+
+    // dump($result);
+
+
+    // return view('welcome');
+    // return $result = new UserResource(User::find(1));
+    // return  UserResource::collection(User::all());
+
+    return $result = new UsersCollection(User::all());
 
     dump($result);
-
-
-    return view('welcome');
 });
