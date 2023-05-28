@@ -359,8 +359,43 @@ Route::get('/', function () {
     // $result = $comment->save();
 
     // dump($result);
-    $city = City::find(1);
-    $result = $city->rooms()->attach(1);
+    // $city = City::find(1);
+    // $result = $city->rooms()->attach(1);
+
+    // dump($result);
+    // $result = User::all();
+    // $result = User::with(['address' => function($query){
+    //     $query->where('street', 'like', '%Garden');
+    // }])->get(); // ['address', 'otherRelation']
+
+    // foreach($result as $user)
+    // {
+    //     echo "{$user->address->street} <br>";
+    // }
+
+    // $result = Reservation::with('user.address')->get();
+
+    // foreach($result as $reservation)
+    // {
+    //     echo "{$reservation->user->address->street} <br>";
+    // }
+
+    // lazy-eager loading:
+    // $result = User::all();
+    // $result->load('address');  // address => function($query) {...}
+
+    // eager loading nested polimorphic relations
+    // $result = Image::with(['imageable' => function ($morphTo) {
+    //     $morphTo->morphWith([
+    //         User::class => ['likedImages']
+    //     ]);
+    // }])->get();
+
+
+    // lazy-eager loading nested polimorphic relations
+    $result = Image::with('imageable')
+    ->get();
+    $result->loadMorph('imageable', [User::class => ['likedImages']]);
 
     dump($result);
 
