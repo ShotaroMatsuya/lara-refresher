@@ -1,6 +1,7 @@
 <?php
 
 use App\User;
+use App\Comment;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 /*
@@ -196,14 +197,58 @@ Route::get('/', function () {
     //             ->orderByRaw('updated_at - created_at DESC')
     //             ->get();
 
-    $result = DB::table('users')
-                ->selectRaw('LENGTH(name) as name_lenght, name')
-                ->orderByRaw('LENGTH(name) DESC')
-                ->get();
+    // $result = DB::table('users')
+    //             ->selectRaw('LENGTH(name) as name_lenght, name')
+    //             ->orderByRaw('LENGTH(name) DESC')
+    //             ->get();
                 
-    dump($result);
+    // dump($result);
 
-    return view('welcome');
+
+
+
+    // $flight = Comment::find(1);
+    // $result = $flight->delete();
+
+    // $result = Comment::destroy([1]);
+
+    // $result = Comment::where('rating', 1)->delete();
+
+    // $result = Comment::withTrashed()->get(); // onlyTrashed()
+    // $result = Comment::withTrashed()->restore(); // onlyTrashed()
+
+    // $result = Comment::where('rating', 1)->forceDelete();
+
+    // dump($result);
+
+    // $result = Comment::all();
+
+    // dump($result);
+
+
+
+
+
+    // $result = Comment::find(1);
+    // $result->rating = 4;
+    // $result->save();
+
+    // dump($result->rating);
+
+    // return view('welcome');
+        // $result = Comment::find(1);
+    // $result->rating = 4;
+    // $result->save();
+
+    $result = User::select([
+        'users.*',
+        'last_commented_at' => Comment::selectRaw('MAX(created_at)')
+            ->whereColumn('user_id', 'users.id')
+    ])->withCasts([
+        'last_commented_at' => 'datetime:Y-m-d' // date and datetime works only for array or json result
+    ])->get()->toJson();
+
+    dump($result);
 
     return view('welcome');
 });
