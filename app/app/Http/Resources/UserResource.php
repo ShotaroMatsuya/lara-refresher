@@ -21,6 +21,13 @@ class UserResource extends JsonResource
             'meta' => $this->meta,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
+            'address' => new AddressResource($this->address),
+            // 'comments' => CommentResource::collection($this->comments),
+            'comments' => CommentResource::collection($this->whenLoaded('comments')),
+            'expires_at' => $this->whenPivotLoaded('role_user', function () {
+            return $this->pivot->expires_at;
+        }),
         ];
     }
 }
+

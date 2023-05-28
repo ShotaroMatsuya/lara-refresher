@@ -447,7 +447,13 @@ Route::get('/', function () {
     // return $result = new UserResource(User::find(1));
     // return  UserResource::collection(User::all());
 
-    return $result = new UsersCollection(User::all());
+    // return $result = new UsersCollection(User::all());
+
+    // dump($result);
+        // return $result = new UserResource(User::find(1));
+    // return  UserResource::collection(User::all());
+
+    return $result = new UsersCollection(User::with('address','comments')->get());
 
     dump($result);
 });
