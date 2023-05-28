@@ -10,7 +10,8 @@ use App\Company;
 use App\Reservation;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Redis;
+use App\Http\Resources\UserResource;
+use App\Http\Resources\UsersCollection;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -436,22 +437,29 @@ Route::get('/', function () {
 
     // dump($result);
 
+    // $result = User::with('comments')->get()->makeVisible('password')->toArray(); // makeHidden()
+    // // $result = User::with('comments')->get()->toJson();
 
-    // strings
-    // $result = Redis::set('key', 'value');
-    // $result = Redis::get('key');
-    // $result = Redis::del('key');
-    // $result = Redis::exists('key');
-    // $result = Redis::incr('counter'); // decr()
+    // dump($result);
 
-    // lists (like arrays)
-    // Redis::lpush('data','lvalue');  // lpop, rpop
-    // Redis::rpush('data','rvalue');
-    // $result = Redis::llen('data');
-    $result = Redis::lrange('data', 0, 2);
+
+    // return view('welcome');
+    // return $result = new UserResource(User::find(1));
+    // return  UserResource::collection(User::all());
+
+    // return $result = new UsersCollection(User::all());
+
+    // dump($result);
+        // return $result = new UserResource(User::find(1));
+    // return  UserResource::collection(User::all());
+
+    // return $result = new UsersCollection(User::with('address','comments')->get());
+
+    // dump($result);
+    // return $result = new UserResource(User::find(1));
+    // return  UserResource::collection(User::all());
+
+    return $result = new UsersCollection(User::with('address','comments')->paginate(1));
 
     dump($result);
-
-
-    return view('welcome');
 });
