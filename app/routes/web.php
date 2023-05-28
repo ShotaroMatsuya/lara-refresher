@@ -393,9 +393,19 @@ Route::get('/', function () {
 
 
     // lazy-eager loading nested polimorphic relations
-    $result = Image::with('imageable')
-    ->get();
-    $result->loadMorph('imageable', [User::class => ['likedImages']]);
+    // $result = Image::with('imageable')
+    // ->get();
+    // $result->loadMorph('imageable', [User::class => ['likedImages']]);
+
+    // dump($result);
+    // $result = User::with('comments')->get();
+
+    // $result = DB::table('users')->join('comments', 'users.id', '=', 'comments.user_id')->get();
+
+    $result = DB::select('select * from `users` inner join `comments` on `users`.`id` = `comments`.`user_id`');
+
+    // $result = DB::statement('DROP TABLE addresses');
+    // $result = DB::statement('ALTER TABLE rooms ADD INDEX index_name (price)');
 
     dump($result);
 
