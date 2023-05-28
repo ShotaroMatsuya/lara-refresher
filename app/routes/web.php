@@ -10,6 +10,7 @@ use App\Company;
 use App\Reservation;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Redis;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -429,9 +430,25 @@ Route::get('/', function () {
     //         ->orderBy('nights', 'DESC')
     //         ->get();
 
-    $additional_fee = 10;
-    $result = Room::selectRaw("room_size, room_number, price + $additional_fee as final_price")->get();
+    // $additional_fee = 10;
+    // $result = Room::selectRaw("room_size, room_number, price + $additional_fee as final_price")->get();
             
+
+    // dump($result);
+
+
+    // strings
+    // $result = Redis::set('key', 'value');
+    // $result = Redis::get('key');
+    // $result = Redis::del('key');
+    // $result = Redis::exists('key');
+    // $result = Redis::incr('counter'); // decr()
+
+    // lists (like arrays)
+    // Redis::lpush('data','lvalue');  // lpop, rpop
+    // Redis::rpush('data','rvalue');
+    // $result = Redis::llen('data');
+    $result = Redis::lrange('data', 0, 2);
 
     dump($result);
 
