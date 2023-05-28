@@ -324,11 +324,39 @@ Route::get('/', function () {
     //     ]);
     // }])->find(3);
 
-    $result = Comment::find(3)
-    ->loadMorphCount('commentable', [
-        Room::class => ['comments'],
-        Image::class => ['comments'],
-    ]);
+    // $result = Comment::find(3)
+    // ->loadMorphCount('commentable', [
+    //     Room::class => ['comments'],
+    //     Image::class => ['comments'],
+    // ]);
+
+    // dump($result);
+
+        // $user = User::find(1);
+    // $result = $user->address()->delete();
+    // $result = $user->address()->saveMany([   // save(new Address)
+    //     new Address(['number' => 1, 'street' => 'street', 'country' => 'USA'])
+    // ]);
+
+    // $result = $user->address()->createMany([ // create()
+    //     ['number' => 2, 'street' => 'street2', 'country' => 'Mexico']
+    // ]);
+
+    // $user = User::find(2);
+    // $address = Address::find(2);
+    // $address->user()->associate($user);
+    // $result = $address->save();
+
+    // $address->user()->dissociate();
+    // $result = $address->save();
+
+    // $room = Room::find(1);
+    // $result = $room->cities()->attach(1);
+    // $result = $room->cities()->detach([1]); // without argument all cities will be detached
+
+    $comment = Comment::find(1);
+    $comment->content = 'Edit to this comment!';
+    $result = $comment->save();
 
     dump($result);
 

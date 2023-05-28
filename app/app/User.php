@@ -40,7 +40,8 @@ class User extends Authenticatable
 
     public function address()
     {
-        return $this->hasOne('App\Address', 'user_id', 'id'); // 2nd 3rd args optional
+        return $this->hasOne('App\Address', 'user_id', 'id')->withDefault(['country'=>'no addrees attached yet']); // 2nd 3rd args optional
+        // withDefault() only for: belongsTo, hasOne, hasOneThrough, and morphOne relations
     }
 
     public function comments()
