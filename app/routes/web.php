@@ -429,9 +429,14 @@ Route::get('/', function () {
     //         ->orderBy('nights', 'DESC')
     //         ->get();
 
-    $additional_fee = 10;
-    $result = Room::selectRaw("room_size, room_number, price + $additional_fee as final_price")->get();
+    // $additional_fee = 10;
+    // $result = Room::selectRaw("room_size, room_number, price + $additional_fee as final_price")->get();
             
+
+    // dump($result);
+
+    $result = User::with('comments')->get()->makeVisible('password')->toArray(); // makeHidden()
+    // $result = User::with('comments')->get()->toJson();
 
     dump($result);
 
