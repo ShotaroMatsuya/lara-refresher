@@ -253,10 +253,84 @@ Route::get('/', function () {
     // // dump($result->comments);
     // dump($result->commentable);
     // $result = User::find(1);
-    $result = Room::find(4);
+    // $result = Room::find(4);
 
-    // dump($result->likedImages, $result->likedRooms);
-    dump($result->likes);
+    // // dump($result->likedImages, $result->likedRooms);
+    // dump($result->likes);
+
+    // $result = User::find(1)->comments()
+    //             ->where('rating', '>', 3)
+    //             ->orWhere('rating', '<', 2)
+    //             ->get();
+    // $result = User::find(1)->comments()
+    //             ->where(function($query){
+    //                 return $query->where('rating', '>', 3)
+    //                         ->orWhere('rating', '<', 2);
+    //             })
+    //             ->get();
+
+    // $result = App\User::has('comments', '>=', 6)->get();
+    // $result = App\Comment::has('user.address')->get();
+
+
+    // $result = App\User::whereHas('comments', function ($query) {
+    //     $query->where('rating', '>', 2);
+    // }, '>=', 2)->get();
+
+    // $result = App\User::doesntHave('comments')->get(); // ->orDoesntHave
+
+    // $result = App\User::whereDoesntHave('comments', function ($query) {
+    //     $query->where('rating', '<', 2);
+    // })->get(); // ->orWhereDoesntHave
+
+    // $result = App\Reservation::whereDoesntHave('user.comments', function ($query) {
+    //     $query->where('rating', '<', 2);
+    // })->get(); // more realistic scenario: give me all posts written by users who rated by at lest 3 stars
+
+    // $result = App\User::withCount('comments')->get();
+
+    // $result = App\User::withCount([
+    //     'comments',
+    //     'comments as negative_comments_count' => function ($query) {
+    //         $query->where('rating', '<=', 2);
+    //     },
+    // ])->get();
+          
+    // dump($result[0]->comments_count,$result[0]->negative_comments_count);
+
+    // return view('welcome');
+        // $result = App\Comment::whereHasMorph(
+    //     'commentable',
+    //     ['App\Image', 'App\Room'],
+    //     function ($query, $type) {
+
+    //         if ($type === 'App\Room')
+    //         {
+    //             $query->where('room_size', '>', 2);
+    //             $query->orWhere('room_size', '<', 2);
+    //         }
+    //         if ($type === 'App\Image')
+    //         {
+    //             $query->where('path', 'like', '%lorem%');
+    //         }
+
+    //     }
+    // )->get();
+
+    // $result = Comment::with(['commentable' => function ($morphTo) {
+    //     $morphTo->morphWithCount([
+    //         Room::class => ['comments'],
+    //         Image::class => ['comments'],
+    //     ]);
+    // }])->find(3);
+
+    $result = Comment::find(3)
+    ->loadMorphCount('commentable', [
+        Room::class => ['comments'],
+        Image::class => ['comments'],
+    ]);
+
+    dump($result);
 
     return view('welcome');
 });
