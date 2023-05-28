@@ -23,6 +23,10 @@ class UsersCollection extends ResourceCollection
             'links' => [
                 'self' => 'link-value',
             ],
+            'other' => [
+                'self2' => 'link-value2',
+            ],
+            'conditional_attribute' => $this->when(true, 'secret-value'), // Auth::user()->isAdmin()
         ];
     }
 }
