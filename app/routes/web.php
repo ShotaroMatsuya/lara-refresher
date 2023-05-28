@@ -354,9 +354,13 @@ Route::get('/', function () {
     // $result = $room->cities()->attach(1);
     // $result = $room->cities()->detach([1]); // without argument all cities will be detached
 
-    $comment = Comment::find(1);
-    $comment->content = 'Edit to this comment!';
-    $result = $comment->save();
+    // $comment = Comment::find(1);
+    // $comment->content = 'Edit to this comment!';
+    // $result = $comment->save();
+
+    // dump($result);
+    $city = City::find(1);
+    $result = $city->rooms()->attach(1);
 
     dump($result);
 
