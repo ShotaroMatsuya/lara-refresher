@@ -34,25 +34,32 @@ Route::get('/', function () {
 
     // dump($categories, $tags, $latest_posts);
 
-    $most_popular_posts  = Post::select('id', 'title')->orderByDesc(
-        Comment::selectRaw('count(post_id) as comment_count')
-            ->whereColumn('posts.id', 'comments.post_id')
-            ->orderBy('comment_count','desc')
-            ->limit(1)
-    )
-    ->withCount('comments')->take(5)->get();
+    // $most_popular_posts  = Post::select('id', 'title')->orderByDesc(
+    //     Comment::selectRaw('count(post_id) as comment_count')
+    //         ->whereColumn('posts.id', 'comments.post_id')
+    //         ->orderBy('comment_count','desc')
+    //         ->limit(1)
+    // )
+    // ->withCount('comments')->take(5)->get();
 
-    $most_active_users = User::select('id','name')->orderByDesc(
-                    Post::selectRaw('count(user_id) as post_count')
-                    ->whereColumn('users.id', 'posts.user_id')
-                    ->orderBy('post_count','desc')
-                    ->limit(1)
-                )
-                ->withCount('posts')
-                ->take(3)
-                ->get();
+    // $most_active_users = User::select('id','name')->orderByDesc(
+    //                 Post::selectRaw('count(user_id) as post_count')
+    //                 ->whereColumn('users.id', 'posts.user_id')
+    //                 ->orderBy('post_count','desc')
+    //                 ->limit(1)
+    //             )
+    //             ->withCount('posts')
+    //             ->take(3)
+    //             ->get();
 
-    dump($most_popular_posts, $most_active_users);
+    // dump($most_popular_posts, $most_active_users);
+
+    $most_popular_category  = Category::select('id', 'title')
+        ->withCount('comments')
+        ->orderBy('comments_count', 'desc')
+        ->take(1)->get();
+
+    dump($most_popular_category);
 
     return view('welcome');
 });
