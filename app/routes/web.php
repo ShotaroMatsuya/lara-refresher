@@ -115,24 +115,24 @@ Route::get('/', function () {
     $sortByMostCommented = true;
 
     $result = DB::table('posts')
-                ->select('id', 'title')
-                ->whereRaw("MATCH(title, content) AGAINST(? IN BOOLEAN MODE)", [$search_term])
-                ->when($sortBy, function($q, $sortBy){
-                    // return $q->orderBy($sortBy);
-                    return $q->orderByRaw($sortBy);
-                }, function($q){
-                    return $q->orderBy('title');
-                })
-                ->when($sortByMostCommented, function($q){
-                    return $q->orderByDesc(
-                        DB::table('comments')
-                        ->selectRaw('count(comments.post_id)')
-                        ->whereColumn('comments.post_id','posts.id')
-                        ->orderByRaw('count(comments.post_id) DESC')
-                        ->limit(1)
-                    );
-                })
-                ->paginate(10);
+        ->select('id', 'title')
+        ->whereRaw("MATCH(title, content) AGAINST(? IN BOOLEAN MODE)", [$search_term]);
+    $result->when($sortBy, function($q, $sortBy){
+        // return $q->orderBy($sortBy);
+        return $q->orderByRaw($sortBy);
+    }, function($q){
+        return $q->orderBy('title');
+    });
+    $result->when($sortByMostCommented, function($q){
+        return $q->orderByDesc(
+            DB::table('comments')
+            ->selectRaw('count(comments.post_id)')
+            ->whereColumn('comments.post_id','posts.id')
+            ->orderByRaw('count(comments.post_id) DESC')
+            ->limit(1)
+        );
+    });
+    $result = $result->paginate(10);
 
     dump($result);
 
