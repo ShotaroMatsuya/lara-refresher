@@ -54,12 +54,24 @@ Route::get('/', function () {
 
     // dump($most_popular_posts, $most_active_users);
 
-    $most_popular_category  = Category::select('id', 'title')
-        ->withCount('comments')
-        ->orderBy('comments_count', 'desc')
-        ->take(1)->get();
+    // $most_popular_category  = Category::select('id', 'title')
+    //     ->withCount('comments')
+    //     ->orderBy('comments_count', 'desc')
+    //     ->take(1)->get();
 
-    dump($most_popular_category);
+    // dump($most_popular_category);
+
+    $item_id = 2;
+
+    // $result  = Post::with('comments')->find($item_id);
+    // $result  = Tag::with(['posts' => function($q){
+    //     $q->select('posts.id', 'posts.title');
+    // }])->find($item_id);
+    $result  = Category::with(['posts' => function($q){
+        $q->select('posts.id', 'posts.title', 'posts.category_id');
+    }])->find($item_id);
+
+    dump($result);
 
     return view('welcome');
 });
