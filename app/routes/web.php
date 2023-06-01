@@ -114,6 +114,7 @@ Route::get('/', function () {
     $sortBy = 'created_at';
     $sortByMostCommented = true;
     $filterByUserId = 1;
+    $filterByHighRating = true;
 
     $result = DB::table('posts')
         ->select('id', 'title')
@@ -135,6 +136,16 @@ Route::get('/', function () {
     });
     $result->when($filterByUserId, function($q, $filterByUserId) {
         return $q->where('user_id', $filterByUserId);
+    });
+    
+    $result->when($filterByHighRating, function($q){
+        return $q->whereExists(function($query){
+            return $query->select('*')
+                ->from('comments')
+                ->whereColumn('comments.post_id', 'posts.id')
+                ->where('comments.content', 'like', '%excellent%')
+                ->limit(1);
+        });
     });
     
     $result = $result->paginate(10);
