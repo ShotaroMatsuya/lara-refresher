@@ -1,8 +1,8 @@
 FROM php:8.0-fpm-alpine
 
 # 必要なパッケージのインストール
-RUN apk add autoconf build-base sqlite-dev\
-    && pecl install xdebug-3.1.5 redis \
+RUN apk add autoconf build-base sqlite-dev linux-headers\
+    && pecl install xdebug redis \
     && docker-php-ext-enable xdebug redis
 RUN docker-php-ext-install pdo pdo_mysql mysqli pdo_sqlite
 

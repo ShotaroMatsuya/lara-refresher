@@ -6,7 +6,6 @@ use App\Models\Post;
 use App\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
-
 /*
 |--------------------------------------------------------------------------
 | Web Routes
