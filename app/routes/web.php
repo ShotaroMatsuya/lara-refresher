@@ -88,13 +88,34 @@ Route::get('/', function () {
 
     // dump($result);
 
+    // $search_term = 'Voluptatibus';
+
+    // // $sortBy = 'created_at';
+    // // $sortBy = 'updated_at';
+    // $sortBy = 'updated_at desc, title asc';
+
+    // $result = DB::table('posts')
+    //             ->whereRaw("MATCH(title, content) AGAINST(? IN BOOLEAN MODE)", [$search_term])
+    //             ->when($sortBy, function($q, $sortBy){
+    //                 // return $q->orderBy($sortBy);
+    //                 return $q->orderByRaw($sortBy);
+    //             }, function($q){
+    //                 return $q->orderBy('title');
+    //             })
+    //             // ->paginate(10);
+    //             ->simplePaginate(10); // only prev, next links
+
+    // dump($result);
+
+    // return view('welcome');
+
     $search_term = 'Voluptatibus';
 
-    // $sortBy = 'created_at';
-    // $sortBy = 'updated_at';
-    $sortBy = 'updated_at desc, title asc';
+    $sortBy = 'created_at';
+    $sortByMostCommented = true;
 
     $result = DB::table('posts')
+                ->select('id', 'title')
                 ->whereRaw("MATCH(title, content) AGAINST(? IN BOOLEAN MODE)", [$search_term])
                 ->when($sortBy, function($q, $sortBy){
                     // return $q->orderBy($sortBy);
@@ -102,8 +123,16 @@ Route::get('/', function () {
                 }, function($q){
                     return $q->orderBy('title');
                 })
-                // ->paginate(10);
-                ->simplePaginate(10); // only prev, next links
+                ->when($sortByMostCommented, function($q){
+                    return $q->orderByDesc(
+                        DB::table('comments')
+                        ->selectRaw('count(comments.post_id)')
+                        ->whereColumn('comments.post_id','posts.id')
+                        ->orderByRaw('count(comments.post_id) DESC')
+                        ->limit(1)
+                    );
+                })
+                ->paginate(10);
 
     dump($result);
 
