@@ -1,17 +1,11 @@
 <?php
 
-use App\City;
-use App\Room;
+use App\Category;
+use App\Models\Comment;
+use App\Models\Post;
 use App\User;
-use App\Image;
-use App\Address;
-use App\Comment;
-use App\Company;
-use App\Reservation;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
-use App\Http\Resources\UserResource;
-use App\Http\Resources\UsersCollection;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -24,442 +18,173 @@ use App\Http\Resources\UsersCollection;
 */
 
 Route::get('/', function () {
-
-    // 1.PDOステートメントを使った記述
-    // $pdo = DB::connection(/*'sqlite'*/)->getPdo();
-    // $users = $pdo->query('select * from users')->fetchAll();
-    
-    // 2. DBファサードを使ってrowクエリを書く
-    // 2-1. selectクエリ(配列が帰ってくる)
-    // $result = DB::select('select * from users where id = ? and name = ?', [1, 'Adalberto Gerlach']);
-    // $result = DB::select('select * from users where id = :id', ['id' => 1]);
-    // 2-2. insertクエリ
-    // DB::insert('insert into users (name, email,password) values (?, ?, ?)', ['Inserted Name', 'email@fdf.fd','passw']);
-    // 2-3. updateタイプ(affectされたrecord数が帰ってくる)
-    // $affected = DB::update('update users set email = "updatedemail@email.com" where email = ?', ['email@fdf.fd']);
-    // 2-4. deleteタイプ(deleteされたrecord数が帰ってくる)
-    // $deleted = DB::delete('delete from users where id = ?',[4]);
-    // 2-5. truncateタイプ
-    // DB::statement('truncate table users');
-    
-    // 3. DBファサード(rowクエリ版)とDBファサード(クエリビルダ版)で比較
-    // $result = DB::select('select * from users'); //arrayが入る
-    // $result = DB::table('users')->select()->get(); //collection型が入る
-    // Eloquentで書く
-    // $result = User::all(); //eloquentのcollection型が入る(relationshipのあるデータを取扱さいに便利)
-
-    // DB::transaction(function () {
-    //     // try catch block is not necessary as well as DB::rollBack();
-    //     try {
-    //         DB::table('users')->delete();
-    //         $result = DB::table('users')->where('id',4)->update(['email' => 'none']);
-    //         if(!$result)
-    //         {
-    //             throw new \Exception;
-    //         }
-    //     } catch(\Exception $e) {
-    //         DB::rollBack();
-    //     }
-  
-    // }, 5); // optional third argument, how many times a transaction should be reattempted
-    
-    // commentsテーブルから取得
-    $users = DB::table('users')->get();
-    $comments = DB::table('comments')->get();
-
-    // factoryの使い方
-    // dump(factory(App\Comment::class,3)->make());  //実際にはクエリは実行されない(Modelインスタンスを作るだけ)
-    // dump(factory(App\Comment::class,3)->create()); // 実際にDBに保存される
-
-    // QueryBuilderまとめ
-    // 1. SELECT
-    // $users = DB::table('users')->get();
-    // $users = DB::table('users')->pluck('email');
-    // $user = DB::table('users')->where('name', 'Mrs. Odie Metz')->first();
-    // $user = DB::table('users')->where('name', 'Mrs. Odie Metz')->value('email');
-    // $user = DB::table('users')->find(1);
-
-    // $comments= DB::table('comments')->select('content as comment_content')->get();
-    // $comments= DB::table('comments')->select('user_id')->distinct()->get();
-
-    // $result = DB::table('comments')->count();
-    // $result = DB::table('comments')->max('user_id');
-    // $result = DB::table('comments')->sum('user_id');
-    // min, avg
-
-    // $result = DB::table('comments')->where('content', 'content')->exists();
-    // $result = DB::table('comments')->where('content', 'content')->doesntExist();
-    
-
-    // where句
-    // $result = DB::table('rooms')->get();
-    // $result = DB::table('rooms')->where('price','<',200)->get(); // = like, etc.
-
-    // AND条件
-    // $result = DB::table('rooms')->where([
-    //     ['room_size', '2'],
-    //     ['price', '<', '400'],
-    // ])->get();
-    
-    // OR条件
-    //  $result = DB::table('rooms')
-    //     ->where('room_size' ,'2')
-    //     ->orWhere('price', '<' ,'400')
-    //     ->get();
-    
-    // // 無名関数は()になる
-    // $result = DB::table('rooms')
-    //         ->where('price', '<' ,'400')
-    //         ->orWhere(function($query) {
-    //             $query->where('room_size', '>' ,'1')
-    //                   ->where('room_size', '<' ,'4');
-    //         })
+    // $categories = Category::select('id','title')->orderBy('title')->get();
+    // // $tags = Tag::select('id', 'name')->get();
+    // $tags = Tag::select('id', 'name')->orderByDesc(
+    //             DB::table('post_tag')
+    //                 ->selectRaw('count(tag_id) as tag_count')
+    //                 ->whereColumn('tags.id', 'post_tag.tag_id')
+    //                 ->orderBy('tag_count','desc')
+    //                 ->limit(1)
+    //         )
     //         ->get();
 
-    // dump($result);
+    // $latest_posts = Post::select('id','title')->latest()->take(5)->withCount('comments')->get(); // good candidate for replacing with redis database
 
-    
-    // $result = DB::table('rooms')
-    //         ->whereBetween('room_size',[1,3]) // whereNotBetween
-    //         ->get();
+    // dump($categories, $tags, $latest_posts);
 
-    // $result = DB::table('rooms')
-    //         ->whereNotIn('id',[1,2,3]) // whereIn
-    //         ->get();
-    // whereNull('column')  whereNotNull
-    // whereDate('created_at', '2020-05-13')
-    // whereMonth('created_at', '5')
-    // whereDay('created_at', '13')
-    // whereYear('created_at', '2020')
-    // whereTime('created_at', '=', '12:25:10')
-    // whereColumn('column1', '>', 'column2')
-    // whereColumn([
-    //     ['first_name', '=', 'last_name'],
-    //     ['updated_at', '>', 'created_at']
-    // ]
+    // $most_popular_posts  = Post::select('id', 'title')->orderByDesc(
+    //     Comment::selectRaw('count(post_id) as comment_count')
+    //         ->whereColumn('posts.id', 'comments.post_id')
+    //         ->orderBy('comment_count','desc')
+    //         ->limit(1)
+    // )
+    // ->withCount('comments')->take(5)->get();
 
-    // // 相関サブクエリ
-    // $result = DB::table('users')
-    //        ->whereExists(function ($query) {
-    //            $query->select('id')
-    //                  ->from('reservations')
-    //                  ->whereRaw('reservations.user_id = users.id')
-    //                  ->where('check_in', '=', '2020-05-12')
-    //                  ->limit(1);
-    //        })
-    //        ->get();
-
-    // dump($result);
-    
-    
-    // Json型の操作
-    // $result = DB::table('users')
-    //             ->whereJsonContains('meta->skills', 'Laravel')
+    // $most_active_users = User::select('id','name')->orderByDesc(
+    //                 Post::selectRaw('count(user_id) as post_count')
+    //                 ->whereColumn('users.id', 'posts.user_id')
+    //                 ->orderBy('post_count','desc')
+    //                 ->limit(1)
+    //             )
+    //             ->withCount('posts')
+    //             ->take(3)
     //             ->get();
 
-    // $result = DB::table('users')
-    //             ->where('meta->settings->site_language', 'en')
-    //             ->get();
+    // dump($most_popular_posts, $most_active_users);
+
+    // $most_popular_category  = Category::select('id', 'title')
+    //     ->withCount('comments')
+    //     ->orderBy('comments_count', 'desc')
+    //     ->take(1)->get();
+
+    // dump($most_popular_category);
+
+    // $item_id = 2;
+
+    // // $result  = Post::with('comments')->find($item_id);
+    // // $result  = Tag::with(['posts' => function($q){
+    // //     $q->select('posts.id', 'posts.title');
+    // // }])->find($item_id);
+    // $result  = Category::with(['posts' => function($q){
+    //     $q->select('posts.id', 'posts.title', 'posts.category_id');
+    // }])->find($item_id);
 
     // dump($result);
 
-    
-    // 
-    // return $result = DB::table('comments')->paginate(3); // other statements like where clause are also possible
-    // // simplePaginate(3); // paginateとの違いは前ページか後ページのリンクしか渡さない
-                
-    // dump($result->items()); //配列を返す
+    // $search_term = 'Voluptatibus';
 
+    // $result = DB::table('posts')
+    //             ->where('title', 'like', "%$search_term%")
+    //             ->orWhere('content', 'like', "%$search_term%")
+    //             // ->get()
+    //             ->paginate(10);
 
-    //     // $result = DB::statement('ALTER TABLE comments ADD FULLTEXT fulltext_index(content)'); // MySQL >= 5.6
-    // $result = DB::table('comments')
-    //     ->whereRaw("MATCH(content) AGAINST(? IN BOOLEAN MODE)", ['+inventore -pariatur'])
-    //     ->get(); // inventoreを含み、pariaturを含まないという条件で検索
+    // $result = DB::table('posts')
+    //             ->whereRaw("MATCH(title, content) AGAINST(? IN BOOLEAN MODE)", [$search_term])
+    //             ->paginate(10);
 
-    // // $result = DB::table('comments')
-    // // ->where("content", 'like', '%inventore%')
-    // // ->get(); //like句よりもfull text　indexの方が速い
 
     // dump($result);
 
+    // $search_term = 'Voluptatibus';
 
-        // $result = DB::table('comments')
-    // // ->where("content", 'like', '%inventore%')
-    // ->whereRaw("content LIKE '%inventore%'") // be careful about SQL injections!
-    // // ->where(DB::raw("content LIKE '%inventore%'")) // not working because where() needs two parameters
-    // ->get();
+    // // $sortBy = 'created_at';
+    // // $sortBy = 'updated_at';
+    // $sortBy = 'updated_at desc, title asc';
 
-    // $result = DB::table('comments')
-    //     // ->select(DB::raw('count(user_id) as number_of_comments, users.name'))
-    //     ->selectRaw('count(user_id) as number_of_comments, users.name',[])
-    //     ->join('users','users.id','=','comments.user_id')
-    //     ->groupBy('user_id')
-    //     ->get();
-
-    // whereRaw / orWhereRaw
-    // havingRaw / orHavingRaw
-    // orderByRaw
-    // groupByRaw
-
-    // $result = DB::table('comments')
-    //             ->orderByRaw('updated_at - created_at DESC')
-    //             ->get();
-
-    // $result = DB::table('users')
-    //             ->selectRaw('LENGTH(name) as name_lenght, name')
-    //             ->orderByRaw('LENGTH(name) DESC')
-    //             ->get();
-                
-    // dump($result);
-
-    // $result = User::find(1);
-    // $result = App\Address::find(1);
-
-    // // dump($result->address->street, $result->address->number);
-    // dump($result->user->name);
-
-    // $result = User::find(1);
-    // $result = App\Comment::find(1);
-
-    // // dump($result->comments);
-    // dump($result->user->name);
-
-    // $result = App\City::find(1);
-    // dump($result->rooms);
-
-    // $result = App\Room::where('room_size', 3)->get();
-    // // dump($result[0]->cities);
-
-    // foreach($result as $room) {
-    //     foreach($room->cities as $city) {
-    //         echo $city->name. '<br>';
-    //         echo $city->pivot->room_id. '<br>';
-    //     }
-    // }
-    // $result = App\Comment::find(6);
-
-    // dump($result->country->name);
-
-    // $result = App\Company::find(2);
-    // dump($result->reservations);
-
-    // $result = User::find(3);
-    // $result = Image::find(7);
-
-    // // dump($result->image);
-    // dump($result->imageable);
-
-    // $result = Room::find(10);
-    // $result = Comment::find(2);
-
-    // // dump($result->comments);
-    // dump($result->commentable);
-    // $result = User::find(1);
-    // $result = Room::find(4);
-
-    // // dump($result->likedImages, $result->likedRooms);
-    // dump($result->likes);
-
-    // $result = User::find(1)->comments()
-    //             ->where('rating', '>', 3)
-    //             ->orWhere('rating', '<', 2)
-    //             ->get();
-    // $result = User::find(1)->comments()
-    //             ->where(function($query){
-    //                 return $query->where('rating', '>', 3)
-    //                         ->orWhere('rating', '<', 2);
+    // $result = DB::table('posts')
+    //             ->whereRaw("MATCH(title, content) AGAINST(? IN BOOLEAN MODE)", [$search_term])
+    //             ->when($sortBy, function($q, $sortBy){
+    //                 // return $q->orderBy($sortBy);
+    //                 return $q->orderByRaw($sortBy);
+    //             }, function($q){
+    //                 return $q->orderBy('title');
     //             })
-    //             ->get();
-
-    // $result = App\User::has('comments', '>=', 6)->get();
-    // $result = App\Comment::has('user.address')->get();
-
-
-    // $result = App\User::whereHas('comments', function ($query) {
-    //     $query->where('rating', '>', 2);
-    // }, '>=', 2)->get();
-
-    // $result = App\User::doesntHave('comments')->get(); // ->orDoesntHave
-
-    // $result = App\User::whereDoesntHave('comments', function ($query) {
-    //     $query->where('rating', '<', 2);
-    // })->get(); // ->orWhereDoesntHave
-
-    // $result = App\Reservation::whereDoesntHave('user.comments', function ($query) {
-    //     $query->where('rating', '<', 2);
-    // })->get(); // more realistic scenario: give me all posts written by users who rated by at lest 3 stars
-
-    // $result = App\User::withCount('comments')->get();
-
-    // $result = App\User::withCount([
-    //     'comments',
-    //     'comments as negative_comments_count' => function ($query) {
-    //         $query->where('rating', '<=', 2);
-    //     },
-    // ])->get();
-          
-    // dump($result[0]->comments_count,$result[0]->negative_comments_count);
-
-    // return view('welcome');
-        // $result = App\Comment::whereHasMorph(
-    //     'commentable',
-    //     ['App\Image', 'App\Room'],
-    //     function ($query, $type) {
-
-    //         if ($type === 'App\Room')
-    //         {
-    //             $query->where('room_size', '>', 2);
-    //             $query->orWhere('room_size', '<', 2);
-    //         }
-    //         if ($type === 'App\Image')
-    //         {
-    //             $query->where('path', 'like', '%lorem%');
-    //         }
-
-    //     }
-    // )->get();
-
-    // $result = Comment::with(['commentable' => function ($morphTo) {
-    //     $morphTo->morphWithCount([
-    //         Room::class => ['comments'],
-    //         Image::class => ['comments'],
-    //     ]);
-    // }])->find(3);
-
-    // $result = Comment::find(3)
-    // ->loadMorphCount('commentable', [
-    //     Room::class => ['comments'],
-    //     Image::class => ['comments'],
-    // ]);
+    //             // ->paginate(10);
+    //             ->simplePaginate(10); // only prev, next links
 
     // dump($result);
 
-        // $user = User::find(1);
-    // $result = $user->address()->delete();
-    // $result = $user->address()->saveMany([   // save(new Address)
-    //     new Address(['number' => 1, 'street' => 'street', 'country' => 'USA'])
-    // ]);
+    // return view('welcome');
 
-    // $result = $user->address()->createMany([ // create()
-    //     ['number' => 2, 'street' => 'street2', 'country' => 'Mexico']
-    // ]);
+    // $search_term = 'Voluptatibus';
 
-    // $user = User::find(2);
-    // $address = Address::find(2);
-    // $address->user()->associate($user);
-    // $result = $address->save();
+    // $sortBy = 'created_at';
+    // $sortByMostCommented = true;
+    // $filterByUserId = 1;
+    // $filterByHighRating = true;
 
-    // $address->user()->dissociate();
-    // $result = $address->save();
+    // $result = DB::table('posts')
+    //     ->select('id', 'title')
+    //     ->whereRaw("MATCH(title, content) AGAINST(? IN BOOLEAN MODE)", [$search_term]);
+    // $result->when($sortBy, function($q, $sortBy){
+    //     // return $q->orderBy($sortBy);
+    //     return $q->orderByRaw($sortBy);
+    // }, function($q){
+    //     return $q->orderBy('title');
+    // });
+    // $result->when($sortByMostCommented, function($q){
+    //     return $q->orderByDesc(
+    //         DB::table('comments')
+    //         ->selectRaw('count(comments.post_id)')
+    //         ->whereColumn('comments.post_id','posts.id')
+    //         ->orderByRaw('count(comments.post_id) DESC')
+    //         ->limit(1)
+    //     );
+    // });
+    // $result->when($filterByUserId, function($q, $filterByUserId) {
+    //     return $q->where('user_id', $filterByUserId);
+    // });
+    
+    // $result->when($filterByHighRating, function($q){
+    //     return $q->whereExists(function($query){
+    //         return $query->select('*')
+    //             ->from('comments')
+    //             ->whereColumn('comments.post_id', 'posts.id')
+    //             ->where('comments.content', 'like', '%excellent%')
+    //             ->limit(1);
+    //     });
+    // });
+    
+    // $result = $result->paginate(10);
 
-    // $room = Room::find(1);
-    // $result = $room->cities()->attach(1);
-    // $result = $room->cities()->detach([1]); // without argument all cities will be detached
+    // dump($result);
 
-    // $comment = Comment::find(1);
-    // $comment->content = 'Edit to this comment!';
+
+    // $user_id = 1;
+    // $category_id = 1;
+    
+    // $post = new Post;
+    // $post->title = 'post_title';
+    // $post->content = 'post_content';
+    // $post->category()->associate($category_id);
+    
+    // $result = User::find($user_id)->posts()->save($post);
+    
+    
+    // $post_id = 1;
+    // $comment = new Comment;
+    // $comment->content = 'comment content';
+    // $comment->post()->associate($post_id);
     // $result = $comment->save();
-
-    // dump($result);
-    // $city = City::find(1);
-    // $result = $city->rooms()->attach(1);
-
-    // dump($result);
-    // $result = User::all();
-    // $result = User::with(['address' => function($query){
-    //     $query->where('street', 'like', '%Garden');
-    // }])->get(); // ['address', 'otherRelation']
-
-    // foreach($result as $user)
-    // {
-    //     echo "{$user->address->street} <br>";
-    // }
-
-    // $result = Reservation::with('user.address')->get();
-
-    // foreach($result as $reservation)
-    // {
-    //     echo "{$reservation->user->address->street} <br>";
-    // }
-
-    // lazy-eager loading:
-    // $result = User::all();
-    // $result->load('address');  // address => function($query) {...}
-
-    // eager loading nested polimorphic relations
-    // $result = Image::with(['imageable' => function ($morphTo) {
-    //     $morphTo->morphWith([
-    //         User::class => ['likedImages']
-    //     ]);
-    // }])->get();
-
-
-    // lazy-eager loading nested polimorphic relations
-    // $result = Image::with('imageable')
-    // ->get();
-    // $result->loadMorph('imageable', [User::class => ['likedImages']]);
-
-    // dump($result);
-    // $result = User::with('comments')->get();
-
-    // $result = DB::table('users')->join('comments', 'users.id', '=', 'comments.user_id')->get();
-
-    // $result = DB::select('select * from `users` inner join `comments` on `users`.`id` = `comments`.`user_id`');
-
-    // // $result = DB::statement('DROP TABLE addresses');
-    // // $result = DB::statement('ALTER TABLE rooms ADD INDEX index_name (price)');
-
+    
+    // $post = Post::find(1);
+    // // $post->title = 'updated title';
+    // // $result = $post->save();
+    // $result = $post->delete();
+    
     // dump($result);
 
-    // $result = DB::table('comments')
-    // ->selectRaw('count(rating) as rating_count, rating') // and other aggregate functions like avg, sum, max, min, etc.
-    // ->groupBy('rating')
-    // ->orderBy('rating_count', 'desc')
-    // ->get();
-
-    // $result = DB::table('rooms')
-    // ->orderByRaw('sqrt(room_number)')
-    // ->get();
-
-    // $result = DB::table('comments')
-    // ->select('content')
-    // ->selectRaw('CASE WHEN rating = 5 THEN "Very good" WHEN rating = 1 THEN "Very bad" ELSE "ok" END as text_rating')
-    // ->get();
-
-    // $result = Reservation::select('*')
-    //         ->selectRaw('DATEDIFF(check_out, check_in) as nights')
-    //         ->orderBy('nights', 'DESC')
-    //         ->get();
-
-    // $additional_fee = 10;
-    // $result = Room::selectRaw("room_size, room_number, price + $additional_fee as final_price")->get();
-            
-
-    // dump($result);
-
-    // $result = User::with('comments')->get()->makeVisible('password')->toArray(); // makeHidden()
-    // // $result = User::with('comments')->get()->toJson();
-
-    // dump($result);
-
-
-    // return view('welcome');
-    // return $result = new UserResource(User::find(1));
-    // return  UserResource::collection(User::all());
-
-    // return $result = new UsersCollection(User::all());
-
-    // dump($result);
-        // return $result = new UserResource(User::find(1));
-    // return  UserResource::collection(User::all());
-
-    // return $result = new UsersCollection(User::with('address','comments')->get());
-
-    // dump($result);
-    // return $result = new UserResource(User::find(1));
-    // return  UserResource::collection(User::all());
-
-    return $result = new UsersCollection(User::with('address','comments')->paginate(1));
-
+    
+    $post = Post::find(40);
+    // $post->tags()->attach(1);
+    // $post->category()->associate(1);
+    // $post->category()->dissociate();
+    $post->tags()->detach();
+    $result = $post->save();
+    
     dump($result);
+
+    return view('welcome');
 });

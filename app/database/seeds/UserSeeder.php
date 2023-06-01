@@ -11,21 +11,8 @@ class UserSeeder extends Seeder
      */
     public function run()
     {
-        factory(App\User::class, 3)
-           ->create()
-           ->each(function ($user) {
-                $user->address()->save(factory(App\Address::class)->make());
-            }); // no need  to use faker unique()
-
-        // $user->posts()->createMany(
-        //     factory(App\Post::class, 3)->make()->toArray()
-        // );
-
-        // $connection = 'sqlite';
-        // $users = factory(App\User::class, 3)->make();
-        // $users->each(function($model) use($connection) {
-        //     $model->setConnection($connection);
-        //     $model->save();
-        // });
+        factory(App\User::class, 10)->create()->each(function ($user) {
+            $user->posts()->saveMany(factory(App\Post::class, mt_rand(2, 6))->make());
+        });
     }
 }
