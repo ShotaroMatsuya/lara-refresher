@@ -109,47 +109,72 @@ Route::get('/', function () {
 
     // return view('welcome');
 
-    $search_term = 'Voluptatibus';
+    // $search_term = 'Voluptatibus';
 
-    $sortBy = 'created_at';
-    $sortByMostCommented = true;
-    $filterByUserId = 1;
-    $filterByHighRating = true;
+    // $sortBy = 'created_at';
+    // $sortByMostCommented = true;
+    // $filterByUserId = 1;
+    // $filterByHighRating = true;
 
-    $result = DB::table('posts')
-        ->select('id', 'title')
-        ->whereRaw("MATCH(title, content) AGAINST(? IN BOOLEAN MODE)", [$search_term]);
-    $result->when($sortBy, function($q, $sortBy){
-        // return $q->orderBy($sortBy);
-        return $q->orderByRaw($sortBy);
-    }, function($q){
-        return $q->orderBy('title');
-    });
-    $result->when($sortByMostCommented, function($q){
-        return $q->orderByDesc(
-            DB::table('comments')
-            ->selectRaw('count(comments.post_id)')
-            ->whereColumn('comments.post_id','posts.id')
-            ->orderByRaw('count(comments.post_id) DESC')
-            ->limit(1)
-        );
-    });
-    $result->when($filterByUserId, function($q, $filterByUserId) {
-        return $q->where('user_id', $filterByUserId);
-    });
+    // $result = DB::table('posts')
+    //     ->select('id', 'title')
+    //     ->whereRaw("MATCH(title, content) AGAINST(? IN BOOLEAN MODE)", [$search_term]);
+    // $result->when($sortBy, function($q, $sortBy){
+    //     // return $q->orderBy($sortBy);
+    //     return $q->orderByRaw($sortBy);
+    // }, function($q){
+    //     return $q->orderBy('title');
+    // });
+    // $result->when($sortByMostCommented, function($q){
+    //     return $q->orderByDesc(
+    //         DB::table('comments')
+    //         ->selectRaw('count(comments.post_id)')
+    //         ->whereColumn('comments.post_id','posts.id')
+    //         ->orderByRaw('count(comments.post_id) DESC')
+    //         ->limit(1)
+    //     );
+    // });
+    // $result->when($filterByUserId, function($q, $filterByUserId) {
+    //     return $q->where('user_id', $filterByUserId);
+    // });
     
-    $result->when($filterByHighRating, function($q){
-        return $q->whereExists(function($query){
-            return $query->select('*')
-                ->from('comments')
-                ->whereColumn('comments.post_id', 'posts.id')
-                ->where('comments.content', 'like', '%excellent%')
-                ->limit(1);
-        });
-    });
+    // $result->when($filterByHighRating, function($q){
+    //     return $q->whereExists(function($query){
+    //         return $query->select('*')
+    //             ->from('comments')
+    //             ->whereColumn('comments.post_id', 'posts.id')
+    //             ->where('comments.content', 'like', '%excellent%')
+    //             ->limit(1);
+    //     });
+    // });
     
-    $result = $result->paginate(10);
+    // $result = $result->paginate(10);
 
+    // dump($result);
+
+
+    // $user_id = 1;
+    // $category_id = 1;
+    
+    // $post = new Post;
+    // $post->title = 'post_title';
+    // $post->content = 'post_content';
+    // $post->category()->associate($category_id);
+    
+    // $result = User::find($user_id)->posts()->save($post);
+    
+    
+    // $post_id = 1;
+    // $comment = new Comment;
+    // $comment->content = 'comment content';
+    // $comment->post()->associate($post_id);
+    // $result = $comment->save();
+    
+    $post = Post::find(1);
+    // $post->title = 'updated title';
+    // $result = $post->save();
+    $result = $post->delete();
+    
     dump($result);
 
     return view('welcome');
