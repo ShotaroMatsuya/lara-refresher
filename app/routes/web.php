@@ -113,6 +113,7 @@ Route::get('/', function () {
 
     $sortBy = 'created_at';
     $sortByMostCommented = true;
+    $filterByUserId = 1;
 
     $result = DB::table('posts')
         ->select('id', 'title')
@@ -132,6 +133,10 @@ Route::get('/', function () {
             ->limit(1)
         );
     });
+    $result->when($filterByUserId, function($q, $filterByUserId) {
+        return $q->where('user_id', $filterByUserId);
+    });
+    
     $result = $result->paginate(10);
 
     dump($result);
