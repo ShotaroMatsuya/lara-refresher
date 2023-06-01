@@ -73,7 +73,7 @@ Route::get('/', function () {
 
     // dump($result);
 
-    $search_term = 'Voluptatibus';
+    // $search_term = 'Voluptatibus';
 
     // $result = DB::table('posts')
     //             ->where('title', 'like', "%$search_term%")
@@ -81,10 +81,29 @@ Route::get('/', function () {
     //             // ->get()
     //             ->paginate(10);
 
+    // $result = DB::table('posts')
+    //             ->whereRaw("MATCH(title, content) AGAINST(? IN BOOLEAN MODE)", [$search_term])
+    //             ->paginate(10);
+
+
+    // dump($result);
+
+    $search_term = 'Voluptatibus';
+
+    // $sortBy = 'created_at';
+    // $sortBy = 'updated_at';
+    $sortBy = 'updated_at desc, title asc';
+
     $result = DB::table('posts')
                 ->whereRaw("MATCH(title, content) AGAINST(? IN BOOLEAN MODE)", [$search_term])
-                ->paginate(10);
-
+                ->when($sortBy, function($q, $sortBy){
+                    // return $q->orderBy($sortBy);
+                    return $q->orderByRaw($sortBy);
+                }, function($q){
+                    return $q->orderBy('title');
+                })
+                // ->paginate(10);
+                ->simplePaginate(10); // only prev, next links
 
     dump($result);
 
