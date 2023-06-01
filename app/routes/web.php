@@ -73,14 +73,18 @@ Route::get('/', function () {
 
     // dump($result);
 
-    $post_title = 'Voluptatibus';
-    $post_content = 'Quidem';
+    $search_term = 'Voluptatibus';
+
+    // $result = DB::table('posts')
+    //             ->where('title', 'like', "%$search_term%")
+    //             ->orWhere('content', 'like', "%$search_term%")
+    //             // ->get()
+    //             ->paginate(10);
 
     $result = DB::table('posts')
-                ->where('title', 'like', "%$post_title%")
-                ->orWhere('content', 'like', "%$post_content%")
-                // ->get()
+                ->whereRaw("MATCH(title, content) AGAINST(? IN BOOLEAN MODE)", [$search_term])
                 ->paginate(10);
+
 
     dump($result);
 
