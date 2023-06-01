@@ -21,7 +21,12 @@ class CountrySeeder extends Seeder
             {
                 foreach ($country->cities as $city)
                 {
-                    $city->hotels()->saveMany(factory(App\Hotel::class, mt_rand(1, 4))->make());
+                    $hotels = $city->hotels()->saveMany(factory(App\Hotel::class, mt_rand(1, 4))->make());
+
+                    foreach($hotels as $hotel)
+                    {
+                        $hotel->rooms()->saveMany(factory(App\Room::class, mt_rand(3, 10))->make());
+                    }
                 }
             }
     }

@@ -6,8 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Hotel extends Model
 {
-    public function hotels()
+    public function rooms()
     {
-        return $this->hasMany('App\Hotel');
+        return $this->hasMany('App\Room');
     }
 }
