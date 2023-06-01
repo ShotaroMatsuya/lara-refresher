@@ -170,10 +170,20 @@ Route::get('/', function () {
     // $comment->post()->associate($post_id);
     // $result = $comment->save();
     
-    $post = Post::find(1);
-    // $post->title = 'updated title';
-    // $result = $post->save();
-    $result = $post->delete();
+    // $post = Post::find(1);
+    // // $post->title = 'updated title';
+    // // $result = $post->save();
+    // $result = $post->delete();
+    
+    // dump($result);
+
+    
+    $post = Post::find(40);
+    // $post->tags()->attach(1);
+    // $post->category()->associate(1);
+    // $post->category()->dissociate();
+    $post->tags()->detach();
+    $result = $post->save();
     
     dump($result);
 
