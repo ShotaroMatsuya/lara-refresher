@@ -18,10 +18,13 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    $user_id = 1;
+    $hotel_id = [1];
     
-    $result = Reservation::with(['rooms.type', 'rooms.hotel'])
-            ->where('user_id', $user_id)->get();
+    $result = Reservation::with(['rooms.type', 'user'])
+            ->whereHas('rooms.hotel', function($q) use($hotel_id) {
+                $q->whereIn('hotel_id', $hotel_id);
+            })
+            ->get();
 
     dump($result);
     
