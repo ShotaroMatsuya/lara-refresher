@@ -1,6 +1,7 @@
 <?php
 
 use App\City;
+use App\Country;
 use App\Hotel;
 use App\Reservation;
 use App\Room;
@@ -20,21 +21,14 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    $hotel = Hotel::find(1);
+    // $room = Room::find(1);
+    // $room->name = 'new name';
+    // $result = $room->save();
     
-    $room_type = new RoomType();
-    $room_type->size = 2;
-    $room_type->price = 200;
-    $room_type->amount = 2;
-    $room_type->save();
+    // $country = Country::find(5);
+    $result = Country::destroy([5,6,7,8,9,10]);
+    // $result = $country->delete();
     
-    $room = new Room;
-    $room->name = 'hotel name';
-    $room->description = 'hotel description';
-    $room->type()->associate($room_type);
-    
-    $result = $hotel->rooms()->save($room);
-
     dump($result);
     
     return view('welcome');
