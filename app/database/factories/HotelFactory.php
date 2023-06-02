@@ -7,7 +7,7 @@ use Faker\Generator as Faker;
 
 $factory->define(Hotel::class, function (Faker $faker) {
     return [
-        'name' => ucfirst($faker->text(20)),
+        'name' => rtrim( ucfirst($faker->text(20)), '.' ),
         'description' => $faker->sentence(),
         'created_at' => $faker->dateTimeBetween('-20 days', '-10 days'),
         'updated_at' => $faker->dateTimeBetween('-5 days', '-1 days')
