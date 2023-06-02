@@ -20,10 +20,20 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     $hotel_id = [1];
     
-    $result = Reservation::with(['rooms.type', 'user'])
-            ->whereHas('rooms.hotel', function($q) use($hotel_id) {
+    // $result = Reservation::with(['rooms.type', 'user'])
+    //         ->select('reservations.*', DB::raw('DATEDIFF(check_out, check_in) as nights'))
+    //         ->whereHas('rooms.hotel', function($q) use($hotel_id) {
+    //             $q->whereIn('hotel_id', $hotel_id);
+    //         })
+    //         ->orderBy('nights', 'DESC')
+    //         ->get();
+            
+
+    $result = Room::whereHas('hotel', function($q) use($hotel_id) {
                 $q->whereIn('hotel_id', $hotel_id);
             })
+            ->withCount('reservations')
+            ->orderBy('reservations_count', 'DESC')
             ->get();
 
     dump($result);
