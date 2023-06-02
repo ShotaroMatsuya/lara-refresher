@@ -53,18 +53,17 @@ Route::get('/', function () {
                 })
                 ->limit(1);
     })
-    ->where('room_types.amount', '>', 0)
     ->where('room_types.size', '=', $room_size)
     ->orderBy('room_types.price', 'asc')
     ->paginate(10);
 
-    $room_id = 6;
+    $room_id = 5;
     $user_id = 1;
     DB::transaction(function () use($room_id, $user_id, $check_in, $check_out) {
 
         $room = Room::findOrFail($room_id);
         
-        $reservation = new Reservation();
+        $reservation = new Reservation;
         $reservation->user_id = $user_id;
         $reservation->check_in = $check_in;
         $reservation->check_out = $check_out;
