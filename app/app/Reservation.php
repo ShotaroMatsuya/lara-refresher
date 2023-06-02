@@ -8,7 +8,7 @@ class Reservation extends Model
 {
     public function rooms()
     {
-        return $this->belongsToMany('App\Room');
+        return $this->belongsToMany('App\Room')->withPivot('status');
     }
     
     public function user()

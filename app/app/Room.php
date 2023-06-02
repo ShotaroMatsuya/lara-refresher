@@ -13,7 +13,7 @@ class Room extends Model
     
     public function reservations()
     {
-        return $this->belongsToMany('App\Reservation');
+        return $this->belongsToMany('App\Reservation')->withPivot('status');
     }
     
     public function hotel()

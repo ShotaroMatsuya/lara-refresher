@@ -21,13 +21,16 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    // $room = Room::find(1);
-    // $room->name = 'new name';
-    // $result = $room->save();
-    
-    // $country = Country::find(5);
-    $result = Country::destroy([5,6,7,8,9,10]);
-    // $result = $country->delete();
+    $result = Reservation::chunk(5, function ($reservations) {
+        foreach ($reservations as $reservation)
+        {
+            foreach ($reservation->rooms()->get() as $room)
+            {
+                if(!$room->pivot->status)
+                $reservation->delete();
+            }
+        }
+    });
     
     dump($result);
     
