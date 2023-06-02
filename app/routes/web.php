@@ -18,24 +18,22 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    $hotel_id = [1];
-    
-    // $result = Reservation::with(['rooms.type', 'user'])
-    //         ->select('reservations.*', DB::raw('DATEDIFF(check_out, check_in) as nights'))
-    //         ->whereHas('rooms.hotel', function($q) use($hotel_id) {
-    //             $q->whereIn('hotel_id', $hotel_id);
-    //         })
-    //         ->orderBy('nights', 'DESC')
+    $hotel_id = range(1,10);
+  
+    // $result = Hotel::whereIn('id',$hotel_id)
+    //         ->withCount('rooms')
+    //         ->orderBy('rooms_count', 'desc')
     //         ->get();
             
-
-    $result = Room::whereHas('hotel', function($q) use($hotel_id) {
-                $q->whereIn('hotel_id', $hotel_id);
-            })
-            ->withCount('reservations')
-            ->orderBy('reservations_count', 'DESC')
+    $result = DB::table('rooms')
+            ->join('room_types','rooms.room_type_id', '=', 'room_types.id')
+            ->selectRaw('sum(room_types.amount) as number_of_single_rooms, rooms.name')
+            ->groupBy('rooms.name', 'room_types.size')
+            ->having('room_types.size', '=', 1)
+            ->whereIn('rooms.hotel_id', $hotel_id)
+            ->orderBy('number_of_single_rooms', 'desc')
             ->get();
-
+ 
     dump($result);
     
     return view('welcome');
