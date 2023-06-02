@@ -1,5 +1,7 @@
 <?php
 
+use App\City;
+use App\Hotel;
 use App\Reservation;
 use App\Room;
 use App\RoomType;
@@ -18,14 +20,14 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    $result = DB::table('users')->orderByDesc(
-        DB::table('reservations')
-            ->select('price')
-            ->whereColumn('users.id', 'reservations.user_id')
-            ->orderByDesc('price')
-            ->limit(1)
-    )->get();
+    $city = City::find(1);
     
+    $hotel = new Hotel();
+    $hotel->name = 'hotel name';
+    $hotel->description = 'hotel description';
+    $hotel->city()->associate($city);
+    $result = $hotel->save();
+
     dump($result);
     
     return view('welcome');
