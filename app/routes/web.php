@@ -18,58 +18,47 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     $check_in = '2023-06-12';
     $check_out = '2023-06-15';
-
-    // $result = Reservation::where(function($q) use($check_in, $check_out) {
-    //     $q->where('check_in', '>', $check_in);
-    //     $q->where('check_in', '>=', $check_out);
-    // })
-    // ->orWhere(function($q) use($check_in, $check_out) {
-    //     $q->where('check_out', '<=', $check_in);
-    //     $q->where('check_out', '<', $check_out);
-    // })
-    // ->get();
-
-    // $result = DB::table('rooms')->whereNotExists(function ($query) use ($check_in, $check_out) {
-    //     $query->select('reservations.id')
-    //             ->from('reservations')
-    //             ->join('reservation_room', 'reservations.id', '=', 'reservation_room.reservation_id')
-    //             ->whereRaw('rooms.id = reservation_room.room_id')
-    //             ->where(function ($q) use ($check_in, $check_out) {
-    //                     $q->where('check_out', '>', $check_in);
-    //                     $q->where('check_in', '<', $check_out);
-    //                 })
-    //                 ->limit(1);
-    // })
-    // ->paginate(10);
     
-    // dump($result);
+    $city_id = 2;
 
-    
-    $check_in = '2020-06-01';
-    $check_out = '2020-06-09';
-
-    // $result = DB::table('rooms')->join('room_types','rooms.room_type_id','=','room_types.id')
-    // ->whereNotExists(function ($query) use ($check_in, $check_out) {
-    //     $query->select('reservations.id')
-    //             ->from('reservations')
-    //             ->join('reservation_room', 'reservations.id', '=', 'reservation_room.reservation_id')
-    //             ->whereRaw('rooms.id = reservation_room.room_id')
-    //             ->where(function ($q) use ($check_in, $check_out) {
-    //                     $q->where('check_out', '>', $check_in);
-    //                     $q->where('check_in', '<', $check_out);
-    //                 })
-    //                 ->limit(1);
-    // })
-    // ->get();
-    
-    $result = Room::with('type')
-        ->whereDoesntHave('reservations' , function($q) use ($check_in, $check_out) {
-                    $q->where(function($q) use($check_in, $check_out) {
+    $result = DB::table('rooms')->join('room_types','rooms.room_type_id','=','room_types.id')
+    ->whereNotExists(function ($query) use ($check_in, $check_out) {
+        $query->select('reservations.id')
+                ->from('reservations')
+                ->join('reservation_room', 'reservations.id', '=', 'reservation_room.reservation_id')
+                ->whereColumn('rooms.id', 'reservation_room.room_id')
+                ->where(function ($q) use ($check_in, $check_out) {
                         $q->where('check_out', '>', $check_in);
                         $q->where('check_in', '<', $check_out);
-                });
-            })
-            ->get();
+                    })
+                    ->limit(1);
+    })
+    ->whereExists(function($q) use($city_id) {
+        $q->select('hotels.id')
+                ->from('hotels')
+                ->whereColumn('rooms.hotel_id','hotels.id')
+                ->whereExists(function($q) use($city_id) {
+                    $q->select('cities.id')
+                    ->from('cities')
+                    ->whereColumn('cities.id','hotels.city_id')
+                    ->where('id', $city_id)
+                    ->limit(1);
+                })
+                ->limit(1);
+    })
+    ->paginate(10);
+    
+    // $result = Room::with('type')
+    //     ->whereDoesntHave('reservations' , function($q) use ($check_in, $check_out) {
+    //                 $q->where(function($q) use($check_in, $check_out) {
+    //                     $q->where('check_out', '>', $check_in);
+    //                     $q->where('check_in', '<', $check_out);
+    //             });
+    //         })
+    //         ->whereHas('hotel.city', function($q) use ($city_id) {
+    //             $q->where('id', $city_id);
+    //         })
+    //         ->paginate(10);
 
     
     
