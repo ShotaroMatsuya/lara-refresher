@@ -20,13 +20,20 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    $city = City::find(1);
+    $hotel = Hotel::find(1);
     
-    $hotel = new Hotel();
-    $hotel->name = 'hotel name';
-    $hotel->description = 'hotel description';
-    $hotel->city()->associate($city);
-    $result = $hotel->save();
+    $room_type = new RoomType();
+    $room_type->size = 2;
+    $room_type->price = 200;
+    $room_type->amount = 2;
+    $room_type->save();
+    
+    $room = new Room;
+    $room->name = 'hotel name';
+    $room->description = 'hotel description';
+    $room->type()->associate($room_type);
+    
+    $result = $hotel->rooms()->save($room);
 
     dump($result);
     
