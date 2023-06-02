@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -14,5 +15,32 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
-});
+    $check_in = '2023-06-12';
+    $check_out = '2023-06-15';
+
+    // $result = Reservation::where(function($q) use($check_in, $check_out) {
+    //     $q->where('check_in', '>', $check_in);
+    //     $q->where('check_in', '>=', $check_out);
+    // })
+    // ->orWhere(function($q) use($check_in, $check_out) {
+    //     $q->where('check_out', '<=', $check_in);
+    //     $q->where('check_out', '<', $check_out);
+    // })
+    // ->get();
+
+    $result = DB::table('rooms')->whereNotExists(function ($query) use ($check_in, $check_out) {
+        $query->select('reservations.id')
+                ->from('reservations')
+                ->join('reservation_room', 'reservations.id', '=', 'reservation_room.reservation_id')
+                ->whereRaw('rooms.id = reservation_room.room_id')
+                ->where(function ($q) use ($check_in, $check_out) {
+                        $q->where('check_out', '>', $check_in);
+                        $q->where('check_in', '<', $check_out);
+                    })
+                    ->limit(1);
+    })
+    ->paginate(10);
+    
+    dump($result);
+    
+    return view('welcome');});
