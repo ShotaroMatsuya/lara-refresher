@@ -39,7 +39,27 @@ class OrderCrudController extends CrudController
      */
     protected function setupListOperation()
     {
-        CRUD::setFromDb(); // columns
+        // CRUD::setFromDb(); // columns
+
+        CRUD::addColumn([
+            'label'     => 'ClientName', // Table column heading
+            'type'      => 'select',
+            'name'      => 'client_id', // the column that contains the ID of that connected entity;
+            'entity'    => 'client', // the method that defines the relationship in your Model
+            'attribute' => 'client_name', // foreign key attribute that is shown to user
+            // 'model'     => "\App\Client::class", // foreign key model
+            'wrapper' => [
+                'href' => function($crud, $column, $entry, $related_key) {
+                    return backpack_url('client/'.$related_key.'/show');
+                },
+                'class' => function($crud, $column, $entry, $related_key) {
+                    return 'text-primary';
+                },
+               'target' => '__blank'
+            ]
+         ]);
+
+
 
         /**
          * Columns can be defined using the fluent syntax or array syntax:
@@ -58,8 +78,11 @@ class OrderCrudController extends CrudController
     {
         CRUD::setValidation(OrderRequest::class);
 
-        CRUD::setFromDb(); // fields
-
+        // CRUD::setFromDb(); // fields
+        CRUD::field('client')->type('select')->model('App\Client')->attribute('client_name')->entity('client');
+        CRUD::field('order_date')->type('date');
+        CRUD::field('order_value')->type('number');
+        
         /**
          * Fields can be defined using the fluent syntax or array syntax:
          * - CRUD::field('price')->type('number');

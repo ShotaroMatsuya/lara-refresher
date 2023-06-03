@@ -60,6 +60,11 @@ class ClientCrudController extends CrudController
 
         CRUD::setFromDb(); // fields
 
+        // CRUD::field('orders'); // when unselected, will set foreign key to null
+        // CRUD::field('orders')->force_delete(true); // when unselected, will delete the related entry
+
+        // CRUD::field('orders')->subfields([['name' => 'order_date', 'test' => 'order_value']]);
+
         /**
          * Fields can be defined using the fluent syntax or array syntax:
          * - CRUD::field('price')->type('number');
