@@ -1,5 +1,6 @@
 <?php
 
+use App\Client;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -14,5 +15,11 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
+    // GET ALL CLIENTS:
+    $result = Client::all(); // lazy loading
+    $result = Client::with('orders.details.product')->get(); // eager loading
+
+    dump($result);
+
     return view('welcome');
 });
