@@ -1,10 +1,14 @@
 FROM php:8.0-fpm-alpine
 
 # 必要なパッケージのインストール
-RUN apk add autoconf build-base sqlite-dev linux-headers\
+RUN apk add autoconf build-base sqlite-dev linux-headers git \
     && pecl install xdebug redis \
     && docker-php-ext-enable xdebug redis
 RUN docker-php-ext-install pdo pdo_mysql mysqli pdo_sqlite
+
+# RUN apk add openssh-client-default
+# RUN mkdir -p ~/.ssh
+# RUN ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts
 
 COPY dockerfiles/php.ini /usr/local/etc/php/php.ini
 
