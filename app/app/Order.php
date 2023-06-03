@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Order extends Model
 {
+    use \Backpack\CRUD\app\Models\Traits\CrudTrait;
     public $timestamps = false;
     
     public function details()
