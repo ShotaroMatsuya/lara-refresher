@@ -1,6 +1,7 @@
 <?php
 
 use App\Client;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -16,8 +17,13 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     // GET ALL CLIENTS:
-    $result = Client::all(); // lazy loading
-    $result = Client::with('orders.details.product')->get(); // eager loading
+
+    // GET PRODUCTS FOR A SPECIFIC ORDER:
+    $result = DB::table('order_details')
+            ->join('products', 'order_details.product_code', '=', 'products.product_code')
+            ->where('order_id', 1)
+            ->get();
+
 
     dump($result);
 
