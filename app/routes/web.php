@@ -17,11 +17,23 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     // GET ALL CLIENTS:
+    // $result = Client::all(); // lazy loading
+    // $result = Client::with('orders.details.product')->get(); // eager loading
 
-    // GET PRODUCTS FOR A SPECIFIC ORDER:
+
+    // // GET PRODUCTS FOR A SPECIFIC ORDER:
+    // $result = DB::table('order_details')
+    //         ->join('products', 'order_details.product_code', '=', 'products.product_code')
+    //         ->where('order_id', 1)
+    //         ->get();
+
+
+    // GET PRODUCTS AND ORDER THEM BY THE MOST POPULAR PRODUCTS (MOST SOLD):
     $result = DB::table('order_details')
+            ->selectRaw('products.product_name, sum(order_details.product_amount) as number_of_orders')
             ->join('products', 'order_details.product_code', '=', 'products.product_code')
-            ->where('order_id', 1)
+            ->groupBy('order_details.product_code')
+            ->orderBy('number_of_orders', 'desc')
             ->get();
 
 
