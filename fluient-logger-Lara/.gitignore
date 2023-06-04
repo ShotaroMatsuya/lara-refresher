@@ -1,0 +1,5 @@
+.vscode
+vendor/
+fluentd/logs/
+db-data/
+es/
