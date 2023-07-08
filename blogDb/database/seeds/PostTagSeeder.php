@@ -12,9 +12,11 @@ class PostTagSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('post_tag')->insert([
-            'post_id' => mt_rand(1, App\Post::all()->count()),
-            'tag_id' => mt_rand(1, 5)
-        ]);
+        for ($i = 0; $i < 20; $i++) {
+            DB::table('post_tag')->insert([
+                'post_id' => mt_rand(1, App\Post::all()->count()),
+                'tag_id' => mt_rand(1, 5)
+            ]);
+        }
     }
 }
