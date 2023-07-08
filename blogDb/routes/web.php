@@ -1,9 +1,10 @@
 <?php
 
 use App\Category;
-use App\Models\Comment;
-use App\Models\Post;
+use App\Comment;
+use App\Post;
 use App\User;
+use App\Tag;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 /*
